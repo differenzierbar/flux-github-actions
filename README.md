@@ -1,1 +1,1 @@
-# flux-validation-action
+# flux-github-actions
