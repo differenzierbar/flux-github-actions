@@ -1,0 +1,20 @@
+name: flux kustomize validation
+description: validate kustomizations in a gitops repository 
+inputs:
+  github_token:
+    description: 'github (app) token to create check run entries'
+    required: true
+  git_sha:
+    description: 'git commit sha for check run entry'
+    required: true
+  kustomizations:
+    description: 'kustomization (roots) to validate'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: validate
+      shell: bash
+      run: |
+        echo "steps.find_kustomization_changes.outputs.kustomization_changes: ${{ steps.find_kustomization_changes.outputs.kustomization_changes }}"
+        .github/workflows/validation.sh ${{ inputs.github_token }} ${{ inputs.git_sha }} ${{ inputs.kustomizations }}
