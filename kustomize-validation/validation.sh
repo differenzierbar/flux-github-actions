@@ -3,9 +3,9 @@
 GITHUB_TOKEN=$1
 GIT_SHA=$2
 
->&2 echo "GITHUB_TOKEN: $GITHUB_TOKEN"
->&2 echo "GIT_SHA: $GIT_SHA"
->&2 echo "3: $3"
+# >&2 echo "GITHUB_TOKEN: $GITHUB_TOKEN"
+# >&2 echo "GIT_SHA: $GIT_SHA"
+# >&2 echo "3: $3"
 
 
 while IFS= read -r kustomization; do

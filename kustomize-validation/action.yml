@@ -16,5 +16,4 @@ runs:
     - name: validate
       shell: bash
       run: |
-        echo "steps.find_kustomization_changes.outputs.kustomization_changes: ${{ steps.find_kustomization_changes.outputs.kustomization_changes }}"
-        .github/workflows/validation.sh ${{ inputs.github_token }} ${{ inputs.git_sha }} ${{ inputs.kustomizations }}
+        ./validation.sh ${{ inputs.github_token }} ${{ inputs.git_sha }} ${{ inputs.kustomizations }}
