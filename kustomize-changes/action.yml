@@ -19,6 +19,6 @@ runs:
       run: |
         ls -la
         pwd
-        kustomization_changes=$($github.action_path/get-kustomization-changes.sh)
+        kustomization_changes=$(get-kustomization-changes.sh)
         echo "kustomization_changes: $kustomization_changes"
         echo "::set-output name=kustomization_changes::$kustomization_changes"        
