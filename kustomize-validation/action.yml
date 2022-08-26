@@ -16,4 +16,4 @@ runs:
     - name: validate
       shell: bash
       run: |
-        ./validation.sh ${{ inputs.github_token }} ${{ inputs.git_sha }} ${{ inputs.kustomizations }}
+        validation.sh ${{ inputs.github_token }} ${{ inputs.git_sha }} ${{ inputs.kustomizations }}
