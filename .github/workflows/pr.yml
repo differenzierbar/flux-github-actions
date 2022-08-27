@@ -1,0 +1,32 @@
+name: validation
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  validation:
+    name: validation
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: 'differenzierbar/flux-github-actions-test'
+          ref: main
+      - name: install
+        run: |
+          sudo apt-get install jq
+          curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz | sudo tar -xz -C /usr/local/bin
+      - name: find kustomization changes
+        id: find_kustomization_changes
+        uses: differenzierbar/flux-github-actions/kustomize-changes@${{ github.event.pull_request.head.sha }}
+        with:
+          changes: "kustomizations/invalid"
+      - name: kustomize validation
+        uses: differenzierbar/flux-github-actions/kustomize-validation@${{ github.event.pull_request.head.sha }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_sha: ${{ github.event.pull_request.head.sha }}
+          kustomizations: ${{ steps.find_kustomization_changes.outputs.kustomization-changes }}
+

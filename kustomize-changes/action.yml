@@ -1,8 +1,8 @@
 name: kustomize-changes
 description: find changes in flux kustomization trees 
 inputs:
-  base_ref:
-    description: 'git ref to compare to'
+  changes:
+    description: 'changes to take into account'
     required: true
 outputs:
   kustomization-changes:
@@ -17,8 +17,6 @@ runs:
       id: find_kustomization_changes
       shell: bash
       run: |
-        ls -la
-        pwd
-        kustomization_changes=$(get-kustomization-changes.sh)
+        kustomization_changes=$(get-kustomization-changes.sh ${{ inputs.changes }})
         echo "kustomization_changes: $kustomization_changes"
-        echo "::set-output name=kustomization_changes::$kustomization_changes"        
+        echo "::set-output name=kustomization_changes::$kustomization_changes"

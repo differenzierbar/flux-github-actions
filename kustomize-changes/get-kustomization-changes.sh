@@ -3,9 +3,10 @@ set -e
 
 declare -A kustomization_changes=()
 
->&2 echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"
+# >&2 echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"
 
-changes=$(git diff $(git merge-base HEAD origin/$GITHUB_BASE_REF) --name-only)
+changes=$1
+# changes=$(git diff $(git merge-base HEAD origin/$GITHUB_BASE_REF) --name-only)
 while IFS= read -r change; do
     # echo $change
     # echo $(dirname $change)/kustomization.yaml
