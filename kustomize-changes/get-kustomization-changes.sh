@@ -16,7 +16,7 @@ while IFS= read -r change; do
     # echo $(dirname $change)/kustomization.yaml
     if [[ "${change##*/}" == "kustomization.yaml" ]];then
         # echo kustomization.yaml itself has changed
-        kustomization_changes[$(realpath --relative-to $kustomizations_root $(dirname $change))]="1"
+        kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$(dirname $change))]="1"
     elif [[ -f "$(dirname $change)/kustomization.yaml" ]];then
         # "kustomization.yaml in directory"
         # check if the kustomization.yaml references the change
@@ -25,10 +25,10 @@ while IFS= read -r change; do
         # echo "change_in_kustomization: $change_in_kustomization"
         if [[ "$change_in_kustomization" != "" ]]; then
             # echo "adding kustomization to changes $(dirname $change)/kustomization.yaml"
-            kustomization_changes[$(realpath --relative-to $kustomizations_root $(dirname $change))]="1"
+            kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$(dirname $change))]="1"
         fi
     elif [[ "$change" =~ .*\.ya?ml ]]; then
-        kustomization_changes[$(realpath --relative-to $kustomizations_root $(dirname $change))]="1"
+        kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$(dirname $change))]="1"
     fi
 done <<< "${changes}"
 
