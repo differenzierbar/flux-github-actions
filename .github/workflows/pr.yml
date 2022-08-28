@@ -27,7 +27,7 @@ jobs:
         id: find_kustomization_changes
         uses: "./kustomize-changes"
         with:
-          changes: "kustomizations/invalid/kustomization.yaml kustomizations/valid/kustomization.yaml"
+          changes: "kustomizations/invalid/kustomization.yaml\nkustomizations/valid/kustomization.yaml"
           kustomizations-root: ./flux-github-actions-test
       - name: set matrix
         id: set-matrix
