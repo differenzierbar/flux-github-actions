@@ -40,4 +40,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           git_sha: ${{ github.event.pull_request.head.sha }}
           kustomizations: ${{ steps.find_kustomization_changes.outputs.kustomization-changes }}
+          kustomization_root: ./flux-github-actions-test
 

@@ -2,6 +2,7 @@
 
 GITHUB_TOKEN=$1
 GIT_SHA=$2
+KUSTOMIZATION_ROOT=$3
 
 # >&2 echo "GITHUB_TOKEN: $GITHUB_TOKEN"
 # >&2 echo "GIT_SHA: $GIT_SHA"
@@ -17,10 +18,10 @@ while IFS= read -r kustomization; do
     --fail \
     -d "{\"name\":\"$kustomization\",\"head_sha\":\"${GIT_SHA}\",\"status\":\"in_progress\",\"started_at\":\"$(date -u +"%Y-%m-%dT%H:%M:%S"Z)\",\"output\":{\"title\":\"Mighty Readme report\",\"summary\":\"\",\"text\":\"\"}}")
     checkrun_id=$(echo $checkrun | jq .id)
-    { kustomize_err="$( { kustomize build $kustomization; } 2>&1 1> $kustomization/kustomize.out)"; } || true
+    { kustomize_err="$( { kustomize build $3/$kustomization; } 2>&1 1> $3/$kustomization/kustomize.out)"; } || true
     if [ -z "$kustomize_err" ]
     then
-    kustomize_out=$(cat $kustomization/kustomize.out | jq -Rsa .)
+    kustomize_out=$(cat $3/$kustomization/kustomize.out | jq -Rsa .)
     echo $kustomize_out
     checkrun_update="{\"name\":\"$kustomization\",\"status\":\"completed\",\"conclusion\":\"success\",\"completed_at\":\"$(date -u +"%Y-%m-%dT%H:%M:%S"Z)\",\"output\":{\"title\":\"Kustomization output\",\"summary\":\"kustomize build ${kustomzation}\",\"text\":$kustomize_out}}"
     else
@@ -36,4 +37,4 @@ while IFS= read -r kustomization; do
     https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs/$checkrun_id \
     --fail \
     -d "$checkrun_update"
-done <<< "$3"
+done <<< "$4"
