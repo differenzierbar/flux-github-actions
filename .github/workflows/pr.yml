@@ -22,11 +22,11 @@ jobs:
           curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz | sudo tar -xz -C /usr/local/bin
       - name: find kustomization changes
         id: find_kustomization_changes
-        uses: "${{ github.workspace }}/kustomize-changes"
+        uses: "./kustomize-changes"
         with:
           changes: "kustomizations/invalid"
       - name: kustomize validation
-        uses: "${{ github.workspace }}/kustomize-validation"
+        uses: "./kustomize-validation"
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           git_sha: ${{ github.event.pull_request.head.sha }}
