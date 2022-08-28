@@ -7,8 +7,7 @@ declare -A kustomization_changes=()
 changes=$1
 kustomizations_root=$2
 
-cd $kustomizations_root
-
+>&2 echo "pwd: $(pwd)"
 # >&2 echo "kustomizations_root: $kustomizations_root"
 
 # changes=$(git diff $(git merge-base HEAD origin/$GITHUB_BASE_REF) --name-only)
