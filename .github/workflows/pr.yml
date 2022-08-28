@@ -51,4 +51,4 @@ jobs:
       matrix: ${{fromJSON(needs.find.outputs.matrix)}}
     steps:
       - run: |
-          echo ${{ matrix.kustomization }}
+          kustomize build ./flux-github-actions-test/${{ matrix.kustomization }}
