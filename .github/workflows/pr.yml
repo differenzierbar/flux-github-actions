@@ -10,9 +10,12 @@ jobs:
     steps:
       - name: Checkout flux-github-actions
         uses: actions/checkout@v3
+        # with: 
+        #   path: flux-github-actions
       - name: Checkout flux-github-actions-test
         uses: actions/checkout@v3
         with:
+          path: flux-github-actions-test
           fetch-depth: 0
           repository: 'differenzierbar/flux-github-actions-test'
           ref: main
