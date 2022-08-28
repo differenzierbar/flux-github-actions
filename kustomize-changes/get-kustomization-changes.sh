@@ -5,7 +5,7 @@ declare -A kustomization_changes=()
 
 
 changes=$1
-export kustomizations_root=$2
+kustomizations_root=$2
 
 >&2 echo "kustomizations_root: $kustomizations_root"
 
@@ -36,6 +36,7 @@ flux_kustomizations=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-a
 result=()
 while IFS= read -r kustomization; do
     # echo $(realpath --relative-to . $kustomization)
+    >&2 echo "kustomizations_root: $kustomizations_root"
     if [[ ${kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomization)]} ]]; then result+=($kustomization); fi    # Exists
 done <<< "${flux_kustomizations}"
 
