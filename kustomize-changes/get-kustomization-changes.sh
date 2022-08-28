@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 declare -A kustomization_changes=()
 
