@@ -32,7 +32,7 @@ jobs:
         id: find_kustomization_changes
         uses: "./kustomize-changes"
         with:
-          changes: kustomizations/invalid
+          changes: kustomizations/invalid/kustomization.yaml
           kustomizations-root: ./flux-github-actions-test
       - name: kustomize validation
         uses: "./kustomize-validation"
