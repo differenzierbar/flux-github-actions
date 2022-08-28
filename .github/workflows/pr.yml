@@ -10,12 +10,12 @@ jobs:
     steps:
       - name: Checkout flux-github-actions
         uses: actions/checkout@v3
-      # - name: Checkout flux-github-actions-test
-      #   uses: actions/checkout@v3
-      #   with:
-      #     fetch-depth: 0
-      #     repository: 'differenzierbar/flux-github-actions-test'
-      #     ref: main
+      - name: Checkout flux-github-actions-test
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: 'differenzierbar/flux-github-actions-test'
+          ref: main
       - name: install
         run: |
           sudo apt-get install jq
