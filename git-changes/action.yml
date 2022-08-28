@@ -1,12 +1,14 @@
 name: git-changes
 description: find changes in a git repository 
 inputs:
-  changes:
+  ref:
     description: 'git ref to compare to'
     required: true
+  dir: 
+    default: .
 outputs:
-  kustomization-changes:
-    description: "git merge-base HEAD origin/$GITHUB_BASE_REF) --name-only"
+  git-changes:
+    description: "git merge-base HEAD inputs.ref) --name-only"
     value: ${{ steps.find_git_changes.outputs.git_changes }}
 runs:
   using: "composite"
@@ -17,6 +19,7 @@ runs:
       id: find_git_changes
       shell: bash
       run: |
-        git_changes=$(git diff $(git merge-base HEAD origin/$GITHUB_BASE_REF) --name-only)
+        cd ${{ inputs.dir }}
+        git_changes=$(git diff $(git merge-base HEAD ${{ inputs.ref }}) --name-only)
         echo "git_changes: $git_changes"
         echo "::set-output name=git_changes::$git_changes"        
