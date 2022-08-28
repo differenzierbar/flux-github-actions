@@ -35,8 +35,8 @@ jobs:
         id: set-matrix
         run: |
           set -ex
-          jo --help
-          echo "::set-output name=matrix::{\"kustomization\": $(jo -a ${{ steps.find_kustomization_changes.outputs.kustomization-changes }})}"
+          json_array=$(jo -a ${{ steps.find_kustomization_changes.outputs.kustomization-changes }})
+          echo "::set-output name=matrix::{\"kustomization\": $json_array}"
       # - name: kustomize validation
       #   uses: "./kustomize-validation"
       #   with:
