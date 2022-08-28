@@ -4,9 +4,11 @@ on:
     branches:
       - main
 jobs:
-  validation:
-    name: validation
+  find:
+    name: find
     runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout flux-github-actions
         uses: actions/checkout@v3
@@ -21,11 +23,6 @@ jobs:
           ref: main
       - name: install
         run: |
-          set -ex
-          ls -la
-          ls -la flux-github-actions-test
-      - name: install
-        run: |
           sudo apt-get install jq
           curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz | sudo tar -xz -C /usr/local/bin
       - name: find kustomization changes
@@ -34,11 +31,23 @@ jobs:
         with:
           changes: kustomizations/invalid/kustomization.yaml
           kustomizations-root: ./flux-github-actions-test
-      - name: kustomize validation
-        uses: "./kustomize-validation"
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          git_sha: ${{ github.event.pull_request.head.sha }}
-          kustomizations: ${{ steps.find_kustomization_changes.outputs.kustomization-changes }}
-          kustomization_root: ./flux-github-actions-test
-
+      - name: set matrix
+        id: set-matrix
+        run: |
+          set -ex
+          echo "::set-output name=matrix::{\"kustomization\": $(jo -a ${{ steps.find_kustomization_changes.outputs.kustomization-changes }})}"
+      # - name: kustomize validation
+      #   uses: "./kustomize-validation"
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     git_sha: ${{ github.event.pull_request.head.sha }}
+      #     kustomizations: ${{ steps.find_kustomization_changes.outputs.kustomization-changes }}
+      #     kustomization_root: ./flux-github-actions-test
+  validation:
+    needs: find
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix: ${{fromJSON(needs.find.outputs.matrix)}}
+    steps:
+      - run: |
+          echo ${{ matrix.kustomization }}
