@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout flux-github-actions
         uses: actions/checkout@v3
-        # with: 
-        #   path: flux-github-actions
       - name: Checkout flux-github-actions-test
         uses: actions/checkout@v3
         with:
@@ -29,7 +27,7 @@ jobs:
         id: find_kustomization_changes
         uses: "./kustomize-changes"
         with:
-          changes: kustomizations/invalid/kustomization.yaml
+          changes: "kustomizations/invalid/kustomization.yaml kustomizations/valid/kustomization.yaml"
           kustomizations-root: ./flux-github-actions-test
       - name: set matrix
         id: set-matrix
@@ -37,13 +35,6 @@ jobs:
           set -ex
           json_array=$(jo -a ${{ steps.find_kustomization_changes.outputs.kustomization-changes }})
           echo "::set-output name=matrix::{\"kustomization\": $json_array}"
-      # - name: kustomize validation
-      #   uses: "./kustomize-validation"
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     git_sha: ${{ github.event.pull_request.head.sha }}
-      #     kustomizations: ${{ steps.find_kustomization_changes.outputs.kustomization-changes }}
-      #     kustomization_root: ./flux-github-actions-test
   validation:
     needs: find
     runs-on: ubuntu-22.04
@@ -53,8 +44,6 @@ jobs:
       - name: Checkout flux-github-actions-test
         uses: actions/checkout@v3
         with:
-          # path: flux-github-actions-test
-          # fetch-depth: 0
           repository: 'differenzierbar/flux-github-actions-test'
           ref: main
       - run: |
