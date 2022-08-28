@@ -5,7 +5,7 @@ declare -A kustomization_changes=()
 
 
 changes=$1
-kustomizations_root=$2
+export kustomizations_root=$2
 
 >&2 echo "kustomizations_root: $kustomizations_root"
 
