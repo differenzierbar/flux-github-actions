@@ -3,10 +3,12 @@ set -e
 
 declare -A kustomization_changes=()
 
-# >&2 echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"
 
 changes=$1
 kustomizations_root=$2
+
+>&2 echo "kustomizations_root: $kustomizations_root"
+
 # changes=$(git diff $(git merge-base HEAD origin/$GITHUB_BASE_REF) --name-only)
 while IFS= read -r change; do
     # echo $change
