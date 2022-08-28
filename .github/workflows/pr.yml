@@ -35,6 +35,7 @@ jobs:
         id: set-matrix
         run: |
           set -ex
+          jo --help
           echo "::set-output name=matrix::{\"kustomization\": $(jo -a ${{ steps.find_kustomization_changes.outputs.kustomization-changes }})}"
       # - name: kustomize validation
       #   uses: "./kustomize-validation"
