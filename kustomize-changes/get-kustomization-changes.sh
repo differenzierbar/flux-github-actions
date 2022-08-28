@@ -6,6 +6,7 @@ declare -A kustomization_changes=()
 # >&2 echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"
 
 changes=$1
+kustomizations_root=$2
 # changes=$(git diff $(git merge-base HEAD origin/$GITHUB_BASE_REF) --name-only)
 while IFS= read -r change; do
     # echo $change
@@ -29,11 +30,11 @@ while IFS= read -r change; do
 done <<< "${changes}"
 
 # echo ${!kustomization_changes[@]}
-flux_kustomizations=$(find . -name "*.yml" -exec yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | .spec.path' {} +)
+flux_kustomizations=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | .spec.path' {} +)
 result=()
 while IFS= read -r kustomization; do
     # echo $(realpath --relative-to . $kustomization)
-    if [[ ${kustomization_changes[$(realpath --relative-to . $kustomization)]} ]]; then result+=($kustomization); fi    # Exists
+    if [[ ${kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomization)]} ]]; then result+=($kustomization); fi    # Exists
 done <<< "${flux_kustomizations}"
 
 echo $result
