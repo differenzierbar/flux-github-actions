@@ -184,6 +184,8 @@ while IFS= read -r kustomization_file; do
             # kustomization_yaml "$kustomization_path/kustomization.yaml" marray 0
             # declare -A visited=()
             changes=($(kustomization_yaml $kustomizations_root "$kustomization_path_real" changes_map)) # visited
+            >&2 echo "changes: ${changes}"
+            >&2 echo "changes: ${changes[@]}"
             if [ ${#changes[@]} -gt 0 ]; then
                 result+=($kustomization_path)
             fi
