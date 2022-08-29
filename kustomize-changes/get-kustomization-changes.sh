@@ -164,11 +164,12 @@ while IFS= read -r kustomization_file; do
     # >&2 echo "kustomization: $kustomization"
     # if [[ ${kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$kustomization)]} ]]; then result+=($kustomization); fi    # Exists
     # if ()
+    >&2 echo "realpath --relative-to $kustomizations_root $kustomization_file"
     kustomization_file_path="$(realpath --relative-to $kustomizations_root $kustomization_file)"
 
     if [[ "${changes_map[$kustomization_file_path]+exists}" ]]; then
         # the flux kustomization object has been changed -> the complete tree (path this file points to) needs to be validated
-        result+=($(yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | .spec.path' "$kustomizations_root/$kustomization_file"))
+        result+=($(yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | .spec.path' "$kustomization_file"))
     else
         kustomization_path=$(yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | .spec.path' $kustomization_file)
         >&2 echo "kustomization_path: $kustomization_path"
