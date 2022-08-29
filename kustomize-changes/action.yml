@@ -9,7 +9,8 @@ inputs:
   #   required: true
   kustomizations-root:
     description: 'root directory containing kustomizations'
-    required: true
+    # required: true
+    default: .
 outputs:
   kustomization-changes:
     description: "kustomization roots that contain changes"
