@@ -6,8 +6,14 @@ declare -A changes_map=()
 
 
 
-changes=$1
-kustomizations_root=$2
+# changes=$1
+# ref=$1
+kustomizations_root=$1
+# pushd $2
+# changes=$(git diff $(git merge-base HEAD $ref) --name-only)
+# popd
+
+
 
 # >&2 echo "pwd: $(pwd)"
 # >&2 echo "kustomizations_root: $kustomizations_root"
@@ -35,7 +41,7 @@ while IFS= read -r change; do
 #         echo "no kustomization.yaml: $kustomizations_root/$(dirname $change)"
 #         kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$(dirname $change))]="1"
 #     fi
-done <<< "${changes}"
+done <<< "${GIT_CHANGES}"
 
 # function kustomization_yaml {
     # echo "Parameter #1 is $1"
@@ -112,7 +118,7 @@ kustomization_yaml()
                 result+=($resource_path)
                 >&2 echo "result: $result"
             fi
-        else 
+        else
             child_result=$(kustomization_yaml $1 "$2/$resource" changes_map)
             >&2 echo "child_result: $child_result"
             result+=($child_result)
