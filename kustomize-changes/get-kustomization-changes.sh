@@ -203,7 +203,7 @@ while IFS= read -r kustomization_file; do
                     result+=($kustomization_path)
                 fi
             fi
-        done <<< "${kustomization_paths}"
+        done <<< "${kustomization_paths[@]}"
     fi
     # kustomization_path=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | filename' {} +)
 
