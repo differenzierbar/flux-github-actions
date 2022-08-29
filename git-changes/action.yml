@@ -20,6 +20,7 @@ runs:
       shell: bash
       run: |
         cd ${{ inputs.dir }}
-        git_changes=$(git diff $(git merge-base HEAD ${{ inputs.ref }}) --name-only)
+        git_changes=()
+        git_changes+=($(git diff $(git merge-base HEAD ${{ inputs.ref }}) --name-only))
         echo "git_changes: $git_changes"
-        echo "::set-output name=git_changes::$git_changes"        
+        echo "::set-output name=git_changes::${git_changes[@])"        
