@@ -178,9 +178,11 @@ while IFS= read -r kustomization_file; do
         >&2 echo "kustomization_paths: ${kustomization_paths[@]}"
         while IFS= read -r kustomization_path; do
             # kustomization_path=$(yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | .spec.path' $kustomization_file)
+            >&2 echo "kustomizations_root: $kustomizations_root"
+            >&2 echo "realpath --relative-to $kustomizations_root $kustomizations_root/$kustomization_path"
             kustomization_path_real="$(realpath --relative-to $kustomizations_root $kustomizations_root/$kustomization_path)"
-            kustomization_path_abs="$(realpath $kustomizations_root/$kustomization_path)"
             >&2 echo "kustomization_path_real: $kustomization_path_real"
+            kustomization_path_abs="$(realpath $kustomizations_root/$kustomization_path)"
             if [[ -f "$kustomization_path_abs/kustomization.yaml" ]]; then
                 # validate the existing kustomization tree recursively
                 # declare -A marray
@@ -203,7 +205,7 @@ while IFS= read -r kustomization_file; do
                     result+=($kustomization_path)
                 fi
             fi
-        done <<< "${kustomization_paths[@]}"
+        done <<< "${kustomization_paths}"
     fi
     # kustomization_path=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | filename' {} +)
 
