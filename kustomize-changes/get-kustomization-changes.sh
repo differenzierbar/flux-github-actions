@@ -164,7 +164,7 @@ while IFS= read -r kustomization_file; do
     # >&2 echo "kustomization: $kustomization"
     # if [[ ${kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$kustomization)]} ]]; then result+=($kustomization); fi    # Exists
     # if ()
-    kustomization_file_path="$(realpath --relative-to $kustomizations_root $kustomizations_root/$kustomization_file)"
+    kustomization_file_path="$(realpath --relative-to $kustomizations_root $kustomization_file)"
 
     if [[ "${changes_map[$kustomization_file_path]+exists}" ]]; then
         # the flux kustomization object has been changed -> the complete tree (path this file points to) needs to be validated
