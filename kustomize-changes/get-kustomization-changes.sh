@@ -13,6 +13,9 @@ kustomizations_root=$1
 # changes=$(git diff $(git merge-base HEAD $ref) --name-only)
 # popd
 
+>&2 echo "kustomizations_root: $kustomizations_root"
+>&2 echo "pwd: $(pwd)"
+>&2 echo "ls -la: $(ls -la)"
 
 
 # >&2 echo "pwd: $(pwd)"
