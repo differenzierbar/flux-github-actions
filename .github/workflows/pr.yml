@@ -4,29 +4,54 @@ on:
     branches:
       - main
 jobs:
-  validation:
-    name: validation
+  find:
+    name: find
     runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Checkout
+      - name: Checkout flux-github-actions
+        uses: actions/checkout@v3
+      - name: Checkout flux-github-actions-test
         uses: actions/checkout@v3
         with:
+          path: flux-github-actions-test
           fetch-depth: 0
           repository: 'differenzierbar/flux-github-actions-test'
           ref: main
       - name: install
         run: |
-          sudo apt-get install jq
+          sudo apt-get install jq jo
           curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz | sudo tar -xz -C /usr/local/bin
+      - name: find git changes
+        id: find_git_changes
+        uses: "./git-changes"
+        with:
+          ref: 0ec447462b9b53f12ff7edd68345ed6f3d593aa0 
+          dir: ./flux-github-actions-test
       - name: find kustomization changes
         id: find_kustomization_changes
-        uses: differenzierbar/flux-github-actions/kustomize-changes@${{ github.event.pull_request.head.sha }}
+        uses: "./kustomize-changes"
         with:
-          changes: "kustomizations/invalid"
-      - name: kustomize validation
-        uses: differenzierbar/flux-github-actions/kustomize-validation@${{ github.event.pull_request.head.sha }}
+          # changes: "${{ env.GIT_CHANGES }}"
+          # ref: 0ec447462b9b53f12ff7edd68345ed6f3d593aa0 
+          kustomizations-root: ./flux-github-actions-test
+      - name: set matrix
+        id: set-matrix
+        run: |
+          set -ex
+          json_array=$(jo -a ${{ steps.find_kustomization_changes.outputs.kustomization-changes }})
+          echo "::set-output name=matrix::{\"kustomization\": $json_array}"
+  validation:
+    needs: find
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix: ${{fromJSON(needs.find.outputs.matrix)}}
+    steps:
+      - name: Checkout flux-github-actions-test
+        uses: actions/checkout@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          git_sha: ${{ github.event.pull_request.head.sha }}
-          kustomizations: ${{ steps.find_kustomization_changes.outputs.kustomization-changes }}
-
+          repository: 'differenzierbar/flux-github-actions-test'
+          ref: main
+      - run: |
+          kustomize build ${{ matrix.kustomization }}

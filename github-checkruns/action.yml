@@ -1,12 +1,9 @@
 name: kustomize-changes
 description: find changes in flux kustomization trees 
 inputs:
-  # changes:
-  #   description: 'changes to take into account'
-  #   required: true
-  # ref:
-  #   description: 'git ref to compare to'
-  #   required: true
+  changes:
+    description: 'changes to take into account'
+    required: true
   kustomizations-root:
     description: 'root directory containing kustomizations'
     required: true
@@ -23,9 +20,6 @@ runs:
       id: find_kustomization_changes
       shell: bash
       run: |
-        changes=()
-        changes+=(${{ inputs.changes }})
-        echo "changes: $changes"
-        kustomization_changes=$(get-kustomization-changes.sh ${{ inputs.ref }} "${{ inputs.kustomizations-root }}")
+        kustomization_changes=$(get-kustomization-changes.sh ${{ inputs.changes }} ${{ inputs.kustomizations-root }})
         echo "kustomization_changes: $kustomization_changes"
         echo "::set-output name=kustomization_changes::$kustomization_changes"
