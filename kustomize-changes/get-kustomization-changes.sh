@@ -153,7 +153,7 @@ kustomization_yaml()
 
 # echo ${!kustomization_changes[@]}
 flux_kustomization_files=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | filename' {} +)
->&2 echo "flux_kustomizations: $flux_kustomizations"
+>&2 echo "flux_kustomizations: $flux_kustomization_files"
 result=()
 while IFS= read -r kustomization_file; do
     >&2 echo "kustomizations_file: $kustomization_file"
@@ -164,11 +164,14 @@ while IFS= read -r kustomization_file; do
     # >&2 echo "kustomization: $kustomization"
     # if [[ ${kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$kustomization)]} ]]; then result+=($kustomization); fi    # Exists
     # if ()
-    if [[ "${changes_map[$kustomization_file]+exists}" ]]; then
+    kustomization_file_path="$(realpath --relative-to $kustomizations_root $kustomizations_root/$kustomization_file)"
+
+    if [[ "${changes_map[$kustomization_file_path]+exists}" ]]; then
         # the flux kustomization object has been changed -> the complete tree (path this file points to) needs to be validated
         result+=($(yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | .spec.path' "$kustomizations_root/$kustomization_file"))
     else
         kustomization_path=$(yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | .spec.path' $kustomization_file)
+        >&2 echo "kustomization_path: $kustomization_path"
         if [[ -f "$kustomizations_root/$kustomization_path/kustomization.yaml" ]];then
             # validate the existing kustomization tree recursively
             # declare -A marray
