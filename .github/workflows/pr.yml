@@ -33,7 +33,7 @@ jobs:
         id: find_kustomization_changes
         uses: "./kustomize-changes"
         with:
-          changes: ${{ env.GIT_CHANGES }}
+          changes: "${{ env.GIT_CHANGES }}"
           kustomizations-root: ./flux-github-actions-test
       - name: set matrix
         id: set-matrix
