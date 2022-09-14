@@ -18,7 +18,7 @@ done
 # execute conftest
 if [[ ${#policy_folders[@]} > 0 ]];then
     echo "executing 'conftest test ${policy_folders[@]/#/"-p "} - <&0'"
-    conftest test ${policy_folders[@]/#/"-p "} - <&0
+    conftest test ${policy_folders[@]/#/"-p "} -o github - <&0
 else
     echo "no policy folders found - skipping contest"
 fi
