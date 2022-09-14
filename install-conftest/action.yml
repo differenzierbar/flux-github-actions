@@ -1,0 +1,13 @@
+name: install-conftest
+description: install https://github.com/open-policy-agent/conftest to /usr/local/bin
+inputs:
+  version: 
+    description: contest version to install
+    default: 0.34.0
+runs:
+  using: "composite"
+  steps:
+    - name: install conftest
+      shell: bash
+      run: |
+        curl -L https://github.com/open-policy-agent/conftest/releases/download/v${{ inputs.version }}/conftest_${{ inputs.version }}_Linux_x86_64.tar.gz | sudo tar -xz -C /usr/local/bin

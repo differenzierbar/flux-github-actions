@@ -1,0 +1,13 @@
+name: install-kustomize
+description: download & install https://github.com/kubernetes-sigs/kustomize to /usr/local/bin
+inputs:
+  version: 
+    description: contest version to install
+    default: v4.5.7
+runs:
+  using: "composite"
+  steps:
+    - name: install kustomize
+      shell: bash
+      run: |
+        curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${{ inputs.version }}/kustomize_${{ inputs.version }}_linux_amd64.tar.gz | sudo tar -xz -C /usr/local/bin
