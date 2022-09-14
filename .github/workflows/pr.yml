@@ -67,12 +67,11 @@ jobs:
       - name: kustomize build
         id: kustomize_build
         run: |
-          kustomize_output=$(kustomize build flux-github-actions-test/${{ matrix.kustomization }})
-          echo "::set-output name=kustomize_output::$kustomize_output"
+          kustomize build flux-github-actions-test/${{ matrix.kustomization }} > flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
       - name: conftest
         id: conftest
         uses: "./conftest"
         with: 
-          input: ${{ steps.kustomize_build.outputs.kustomize_output }}
+          input: flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
           directory: flux-github-actions-test/${{ matrix.kustomization }}
           root-directory: flux-github-actions-test

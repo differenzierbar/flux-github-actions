@@ -2,7 +2,7 @@ name: conftest
 description: execute conftest using policies in the parent directories
 inputs:
   input:
-    description: 'input configuration for conftest that will be validated'
+    description: 'input file that will be validated with conftest'
     required: true
   directory:
     description: 'in this directory and all parent directories up to root-directory policy subdirectories will be used'
@@ -23,10 +23,4 @@ runs:
       id: conftest
       shell: bash
       run: |
-        # echo "inputs.input"
-        echo "${{ inputs.input }}"
-        echo $(cat << EOF
-        ${{ inputs.input }}
-        EOF
-        )
-        # echo "${{ inputs.input }}" | conftest.sh ${{ inputs.directory }} ${{ inputs.root-directory }}
+        cat "${{ inputs.input }}" | conftest.sh ${{ inputs.directory }} ${{ inputs.root-directory }}
