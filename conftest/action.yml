@@ -1,0 +1,26 @@
+name: conftest
+description: execute conftest using policies in the parent directories
+inputs:
+  input:
+    description: 'input configuration for conftest that will be validated'
+    required: true
+  directory:
+    description: 'in this directory and all parent directories up to root-directory policy subdirectories will be used'
+    required: true
+  root-directory:
+    description: 'ancestor directory up to that policy subdirectories will be used'
+    default: /
+# outputs:
+#   kustomization-changes:
+#     description: "kustomization roots that contain changes"
+#     value: ${{ steps.find_kustomization_changes.outputs.kustomization_changes }}
+runs:
+  using: "composite"
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: execute conftest
+      id: conftest
+      shell: bash
+      run: |
+        echo "${{ inputs.input }}" | conftest.sh ${{ inputs.directory }} ${{ inputs.root-directory }}

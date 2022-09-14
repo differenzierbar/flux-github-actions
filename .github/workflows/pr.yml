@@ -48,10 +48,33 @@ jobs:
     strategy:
       matrix: ${{fromJSON(needs.find.outputs.matrix)}}
     steps:
+      # - name: Checkout flux-github-actions-test
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: 'differenzierbar/flux-github-actions-test'
+      #     ref: main
+      - name: Checkout flux-github-actions
+        uses: actions/checkout@v3
       - name: Checkout flux-github-actions-test
         uses: actions/checkout@v3
         with:
+          path: flux-github-actions-test
+          fetch-depth: 0
           repository: 'differenzierbar/flux-github-actions-test'
           ref: main
-      - run: |
-          kustomize build ${{ matrix.kustomization }}
+      - name: generate kustomization yaml
+        uses: "./generate-kustomization-yaml"
+        with: 
+          directory: flux-github-actions-test/${{ matrix.kustomization }}
+      - name: kustomize build
+        id: kustomize_build
+        run: |
+          kustomize_output=$(kustomize build flux-github-actions-test/${{ matrix.kustomization }})
+          echo "::set-output name=kustomize_output::$kustomize_output"
+      - name: conftest
+        id: conftest
+        uses: "./conftest"
+        with: 
+          input: ${{ steps.find_kustomization_changes.outputs.kustomization-changes }}
+          directory: flux-github-actions-test/${{ matrix.kustomization }}
+          root-directory: flux-github-actions-test/conftest

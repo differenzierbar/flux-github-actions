@@ -1,0 +1,15 @@
+name: generate-kustomization-yaml
+description: generate a kustomization yaml file in the given directory if it does not exist
+inputs:
+  directory: 
+    description: parent directory of the kustomization yaml
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: generate kustomization yaml
+      shell: bash
+      run: |
+        generate-kustomization-yaml.sh ${{ inputs.directory }}
