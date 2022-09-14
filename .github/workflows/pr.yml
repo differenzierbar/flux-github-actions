@@ -73,6 +73,6 @@ jobs:
         id: conftest
         uses: "./conftest"
         with: 
-          input: ${{ steps.find_kustomization_changes.outputs.kustomization-changes }}
+          input: ${{ steps.kustomize_build.outputs.kustomize_output }}
           directory: flux-github-actions-test/${{ matrix.kustomization }}
           root-directory: flux-github-actions-test
