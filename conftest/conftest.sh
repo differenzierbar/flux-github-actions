@@ -9,12 +9,13 @@ root_dir="$(readlink -f "$2")"
 policy_folders=()
 
 while : ; do
-    echo $path
+    # echo $path
     policy_folders+=($(find "$path" -maxdepth 1 -mindepth 1 -name "policy" -type d))
     [[ $path != $root_dir ]] && [[ $path != "/" ]] || break
     path="$(readlink -f "$path"/..)"
 done
 
+# execute conftest
 if [[ ${#policy_folders[@]} > 0 ]];then
     echo "executing 'conftest test ${policy_folders[@]/#/"-p "} - <&0'"
     conftest test ${policy_folders[@]/#/"-p "} - <&0

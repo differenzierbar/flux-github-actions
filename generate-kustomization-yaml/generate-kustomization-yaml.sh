@@ -6,5 +6,6 @@ if [[ ! -f "$path/kustomization.yaml" ]]; then
     pushd $path
     # FIMXE recursive find yaml files
     kustomize create --autodetect --recursive
+    cat kustomization.yaml
     popd
 fi
