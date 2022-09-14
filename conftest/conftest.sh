@@ -6,18 +6,18 @@ git_root_dir=$(git rev-parse --show-toplevel)
 set -e
 path="$(readlink -f "$1")"
 root_dir="$(readlink -f "$2")"
-result=()
+policy_folders=()
 
 while : ; do
     echo $path
-    result+=($(find "$path" -maxdepth 1 -mindepth 1 -name "policy" -type d))
+    policy_folders+=($(find "$path" -maxdepth 1 -mindepth 1 -name "policy" -type d))
     [[ $path != $root_dir ]] && [[ $path != "/" ]] || break
     path="$(readlink -f "$path"/..)"
 done
 
-echo "executing 'conftest test ${result[@]/#/"-p "} - <&0'"
-
-# conftest test -p ../../../policies/ ../../policies -
-# echo "executing conftest test ${result[@]/#/\"-p \"} -"
-conftest test ${result[@]/#/"-p "} - <&0
-
+if [[ ${#policy_folders[@]} > 0 ]];then
+    echo "executing 'conftest test ${policy_folders[@]/#/"-p "} - <&0'"
+    conftest test ${policy_folders[@]/#/"-p "} - <&0
+else
+    echo "no policy folders found - skipping contest"
+fi

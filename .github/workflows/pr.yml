@@ -80,4 +80,4 @@ jobs:
         with: 
           input: ${{ steps.find_kustomization_changes.outputs.kustomization-changes }}
           directory: flux-github-actions-test/${{ matrix.kustomization }}
-          root-directory: flux-github-actions-test/conftest
+          root-directory: flux-github-actions-test
