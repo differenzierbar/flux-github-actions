@@ -23,6 +23,6 @@ runs:
       id: conftest
       shell: bash
       run: |
-        echo "inputs.input"
+        # echo "inputs.input"
         echo "${{ inputs.input }}"
-        echo "${{ inputs.input }}" | conftest.sh ${{ inputs.directory }} ${{ inputs.root-directory }}
+        # echo "${{ inputs.input }}" | conftest.sh ${{ inputs.directory }} ${{ inputs.root-directory }}
