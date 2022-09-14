@@ -22,7 +22,6 @@ jobs:
       - name: install
         run: |
           sudo apt-get install jq jo
-          curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz | sudo tar -xz -C /usr/local/bin
       - name: find git changes
         id: find_git_changes
         uses: "./git-changes"
@@ -48,10 +47,31 @@ jobs:
     strategy:
       matrix: ${{fromJSON(needs.find.outputs.matrix)}}
     steps:
+      - name: Checkout flux-github-actions
+        uses: actions/checkout@v3
       - name: Checkout flux-github-actions-test
         uses: actions/checkout@v3
         with:
+          path: flux-github-actions-test
+          fetch-depth: 0
           repository: 'differenzierbar/flux-github-actions-test'
           ref: main
-      - run: |
-          kustomize build ${{ matrix.kustomization }}
+      - name: install-kustomize
+        uses: ./install-kustomize
+      - name: install-conftest
+        uses: ./install-conftest
+      - name: generate kustomization yaml
+        uses: "./generate-kustomization-yaml"
+        with: 
+          directory: flux-github-actions-test/${{ matrix.kustomization }}
+      - name: kustomize build
+        id: kustomize_build
+        run: |
+          kustomize build flux-github-actions-test/${{ matrix.kustomization }} > flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
+      - name: conftest
+        id: conftest
+        uses: "./conftest"
+        with: 
+          input: flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
+          directory: flux-github-actions-test/${{ matrix.kustomization }}
+          root-directory: flux-github-actions-test
