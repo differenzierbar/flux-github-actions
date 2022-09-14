@@ -25,4 +25,8 @@ runs:
       run: |
         # echo "inputs.input"
         echo "${{ inputs.input }}"
+        echo $(cat << EOF
+        ${{ inputs.input }}
+        EOF
+        )
         # echo "${{ inputs.input }}" | conftest.sh ${{ inputs.directory }} ${{ inputs.root-directory }}
