@@ -42,6 +42,7 @@ jobs:
   validation:
     needs: find
     runs-on: ubuntu-22.04
+    if: ${{ needs.find.outputs.matrix != '' }}
     strategy:
       matrix: ${{fromJSON(needs.find.outputs.matrix)}}
     steps:
