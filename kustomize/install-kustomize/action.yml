@@ -2,7 +2,7 @@ name: install-kustomize
 description: download & install https://github.com/kubernetes-sigs/kustomize to /usr/local/bin
 inputs:
   version: 
-    description: contest version to install
+    description: kustomize version to install
     default: v4.5.7
 runs:
   using: "composite"

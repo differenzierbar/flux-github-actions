@@ -2,7 +2,7 @@ name: install-conftest
 description: install https://github.com/open-policy-agent/conftest to /usr/local/bin
 inputs:
   version: 
-    description: contest version to install
+    description: conftest version to install
     default: 0.34.0
 runs:
   using: "composite"

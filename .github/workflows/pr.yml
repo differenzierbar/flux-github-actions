@@ -28,26 +28,25 @@ jobs:
         with:
           ref: 0ec447462b9b53f12ff7edd68345ed6f3d593aa0 
           dir: ./flux-github-actions-test
-      - name: find kustomizations
-        id: find_kustomizations
-        uses: "./flux/find-kustomizations"
+      - name: find kustomization with changes
+        id: find-kustomizations-with_changes
+        uses: "./flux/find-kustomizations-with-changes"
         with:
           kustomizations-root: ./flux-github-actions-test
-      - name: find kustomization changes
-        id: find_kustomization_changes
-        uses: "./flux/find-kustomization-changes"
-        with:
-          kustomizations-root: ./flux-github-actions-test
-          kustomizations: ${{ steps.find_kustomizations.outputs.kustomizations }}
       - name: set matrix
         id: set-matrix
         run: |
           set -ex
-          json_array=$(jo -a ${{ steps.find_kustomization_changes.outputs.kustomization-changes }})
-          echo "::set-output name=matrix::{\"kustomization\": $json_array}"
+          json_array=$(jo -a ${{ steps.find-kustomizations-with_changes.outputs.kustomizations }})
+          if [[ $(echo $json_array | jq '. | length') -gt 0 ]]; then
+            echo "::set-output name=matrix::{\"kustomization\": $json_array}"
+          else 
+            echo "::set-output name=matrix::"
+          fi
   validation:
     needs: find
     runs-on: ubuntu-22.04
+    if: ${{ needs.find.outputs.matrix != '' }}
     strategy:
       matrix: ${{fromJSON(needs.find.outputs.matrix)}}
     steps:
