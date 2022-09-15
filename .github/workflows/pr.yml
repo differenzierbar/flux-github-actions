@@ -43,7 +43,7 @@ jobs:
           else 
             echo "::set-output name=matrix::"
           fi
-  validation:
+  validation-with-kustomize:
     needs: find
     runs-on: ubuntu-22.04
     if: ${{ needs.find.outputs.matrix != '' }}
@@ -77,3 +77,34 @@ jobs:
         with: 
           input: flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
           root-directory: flux-github-actions-test
+  validation-plain-yaml:
+    needs: find
+    runs-on: ubuntu-22.04
+    if: ${{ needs.find.outputs.matrix != '' }}
+    strategy:
+      matrix: ${{fromJSON(needs.find.outputs.matrix)}}
+    steps:
+      - name: Checkout flux-github-actions
+        uses: actions/checkout@v3
+      - name: Checkout flux-github-actions-test
+        uses: actions/checkout@v3
+        with:
+          path: flux-github-actions-test
+          fetch-depth: 0
+          repository: 'differenzierbar/flux-github-actions-test'
+          ref: main
+      - name: install-conftest
+        uses: ./conftest/install-conftest
+      - name: find yml files
+        id: find-yml-files
+        uses: "./generic/find-files"
+        with: 
+          directory: flux-github-actions-test/${{ matrix.kustomization }}
+          pattern: *.yml
+      - name: conftest-test
+        id: conftest-test
+        uses: "./conftest/conftest-test"
+        with: 
+          files: {{ steps.find-yml-files.outputs.files }}
+          policy-parent-directory-top: flux-github-actions-test
+          policy-parent-directory-bottom: flux-github-actions-test/${{ matrix.kustomization }}

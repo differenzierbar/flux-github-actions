@@ -1,16 +1,15 @@
 name: conftest
 description: execute conftest using policies in the parent directories
 inputs:
-  input:
-    description: 'input file that will be validated with conftest'
+  files:
+    description: 'files that will be validated with conftest'
     required: true
-  root-directory:
+  policy-parent-directory-bottom:
+    description: 'directory from that policy subdirectories will be used'
+    required: true
+  policy-parent-directory-top:
     description: 'ancestor directory up to that policy subdirectories will be used'
     default: .
-# outputs:
-#   kustomization-changes:
-#     description: "kustomization roots that contain changes"
-#     value: ${{ steps.find_kustomization_changes.outputs.kustomization_changes }}
 runs:
   using: "composite"
   steps:
@@ -20,4 +19,4 @@ runs:
       id: conftest
       shell: bash
       run: |
-        conftest.sh ${{ inputs.input }} ${{ inputs.root-directory }}
+        conftest.sh ${{ inputs.policy-parent-directory-top }} ${{ inputs.policy-parent-directory-bottom }} ${{ inputs.files }}
