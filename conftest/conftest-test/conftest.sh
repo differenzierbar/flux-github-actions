@@ -4,7 +4,8 @@
 git_root_dir=$(git rev-parse --show-toplevel)
 
 set -e
-path="$(readlink -f "$1")"
+file="$(readlink -f "$1")"
+path="$(dirname $file)"
 root_dir="$(readlink -f "$2")"
 policy_folders=()
 
@@ -17,8 +18,8 @@ done
 
 # execute conftest
 if [[ ${#policy_folders[@]} > 0 ]];then
-    echo "executing 'conftest test ${policy_folders[@]/#/"-p "} - <&0'"
-    conftest test ${policy_folders[@]/#/"-p "} -o github - <&0
+    echo "executing 'conftest test $file ${policy_folders[@]/#/"-p "} -o github'"
+    conftest test $file ${policy_folders[@]/#/"-p "} -o github
 else
     echo "no policy folders found - skipping contest"
 fi

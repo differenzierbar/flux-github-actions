@@ -1,0 +1,24 @@
+name: generic-find-files
+description: find files
+inputs:
+  directory:
+    description: directory to search
+    default: .
+  pattern: 
+    description: file name pattern
+outputs:
+  files:
+    description: "relative file paths"
+    value: ${{ steps.find_files.outputs.files }}
+runs:
+  using: "composite"
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: find files
+      id: find_files
+      shell: bash
+      run: |
+        files=$(find-files.sh "${{ inputs.directory }}" "${{ inputs.pattern }}")
+        echo "kustomizations: $files"
+        echo "::set-output name=files::$files"

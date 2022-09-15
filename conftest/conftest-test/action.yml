@@ -4,9 +4,6 @@ inputs:
   input:
     description: 'input file that will be validated with conftest'
     required: true
-  directory:
-    description: 'in this directory and all parent directories up to root-directory policy subdirectories will be used'
-    required: true
   root-directory:
     description: 'ancestor directory up to that policy subdirectories will be used'
     default: .
@@ -23,4 +20,4 @@ runs:
       id: conftest
       shell: bash
       run: |
-        cat "${{ inputs.input }}" | tail -n +1 | conftest.sh ${{ inputs.directory }} ${{ inputs.root-directory }}
+        conftest.sh ${{ inputs.input }} ${{ inputs.root-directory }}

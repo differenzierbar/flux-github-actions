@@ -76,5 +76,4 @@ jobs:
         uses: "./conftest/conftest-test"
         with: 
           input: flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
-          directory: flux-github-actions-test/${{ matrix.kustomization }}
           root-directory: flux-github-actions-test
