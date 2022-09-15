@@ -24,9 +24,6 @@ runs:
       id: find_kustomization_changes
       shell: bash
       run: |
-        changes=()
-        changes+=(${{ inputs.changes }})
-        echo "changes: $changes"
         kustomizations=$(find-kustomizations-with-changes.sh ${{ inputs.kustomizations-root }})
         echo "kustomizations: $kustomizations"
         echo "::set-output name=kustomizations::$kustomizations"
