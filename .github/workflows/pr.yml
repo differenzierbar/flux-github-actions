@@ -105,6 +105,6 @@ jobs:
         id: conftest-test
         uses: "./conftest/conftest-test"
         with: 
-          files: {{ steps.find-yml-files.outputs.files }}
+          files: ${{ steps.find-yml-files.outputs.files }}
           policy-parent-directory-top: flux-github-actions-test
           policy-parent-directory-bottom: flux-github-actions-test/${{ matrix.kustomization }}
