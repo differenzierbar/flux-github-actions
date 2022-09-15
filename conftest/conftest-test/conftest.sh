@@ -1,15 +1,13 @@
 #!/bin/bash
 
-# find all policy directories in parent folders 
-git_root_dir=$(git rev-parse --show-toplevel)
-
 set -e
 
 policy_parent_directory_top="$(readlink -f "$1")"
 shift
 
-while IFS= read -r input_file; do
+for input_file in $@; do
 
+    echo $input_file
     policy_folders=()
     path=$(dirname $input_file)
     while : ; do
@@ -24,7 +22,7 @@ while IFS= read -r input_file; do
         echo "executing 'conftest test $input_file ${policy_folders[@]/#/"-p "} -o github'"
         conftest test $input_file ${policy_folders[@]/#/"-p "} -o github
     else
-        echo "no policy folders found - skipping contest for $input_file"
+        echo "no policy folders found - skipping conftest for $input_file"
     fi
 
-done <<< "$@"
+done

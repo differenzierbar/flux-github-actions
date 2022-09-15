@@ -20,5 +20,5 @@ runs:
       shell: bash
       run: |
         files=$(find-files.sh "${{ inputs.directory }}" "${{ inputs.pattern }}")
-        echo "kustomizations: $files"
+        echo "files: $files"
         echo "::set-output name=files::$files"
