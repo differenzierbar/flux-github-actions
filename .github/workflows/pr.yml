@@ -24,17 +24,21 @@ jobs:
           sudo apt-get install jq jo
       - name: find git changes
         id: find_git_changes
-        uses: "./git-changes"
+        uses: "./git/git-changes"
         with:
           ref: 0ec447462b9b53f12ff7edd68345ed6f3d593aa0 
           dir: ./flux-github-actions-test
+      - name: find kustomizations
+        id: find_kustomizations
+        uses: "./flux/find-kustomizations"
+        with:
+          kustomizations-root: ./flux-github-actions-test
       - name: find kustomization changes
         id: find_kustomization_changes
-        uses: "./kustomize-changes"
+        uses: "./flux/find-kustomization-changes"
         with:
-          # changes: "${{ env.GIT_CHANGES }}"
-          # ref: 0ec447462b9b53f12ff7edd68345ed6f3d593aa0 
           kustomizations-root: ./flux-github-actions-test
+          kustomizations: ${{ steps.find_kustomizations.outputs.kustomizations }}
       - name: set matrix
         id: set-matrix
         run: |
@@ -57,20 +61,20 @@ jobs:
           repository: 'differenzierbar/flux-github-actions-test'
           ref: main
       - name: install-kustomize
-        uses: ./install-kustomize
+        uses: ./kustomize/install-kustomize
       - name: install-conftest
-        uses: ./install-conftest
+        uses: ./conftest/install-conftest
       - name: generate kustomization yaml
-        uses: "./generate-kustomization-yaml"
+        uses: "./kustomize/generate-kustomization-yaml"
         with: 
           directory: flux-github-actions-test/${{ matrix.kustomization }}
       - name: kustomize build
         id: kustomize_build
         run: |
           kustomize build flux-github-actions-test/${{ matrix.kustomization }} > flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
-      - name: conftest
-        id: conftest
-        uses: "./conftest"
+      - name: conftest-test
+        id: conftest-test
+        uses: "./conftest/conftest-test"
         with: 
           input: flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
           directory: flux-github-actions-test/${{ matrix.kustomization }}

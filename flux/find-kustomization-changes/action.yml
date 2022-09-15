@@ -11,6 +11,9 @@ inputs:
     description: 'root directory containing kustomizations'
     # required: true
     default: .
+  kustomizations:
+    description: 'flux kustomization files'
+    required: true
 outputs:
   kustomization-changes:
     description: "kustomization roots that contain changes"
@@ -27,6 +30,6 @@ runs:
         changes=()
         changes+=(${{ inputs.changes }})
         echo "changes: $changes"
-        kustomization_changes=$(get-kustomization-changes.sh ${{ inputs.ref }} "${{ inputs.kustomizations-root }}")
+        kustomization_changes=$(get-kustomization-changes.sh "${{ inputs.kustomizations-root }}" "${{ inputs.kustomizations }}")
         echo "kustomization_changes: $kustomization_changes"
         echo "::set-output name=kustomization_changes::$kustomization_changes"

@@ -4,109 +4,15 @@ set -e
 declare -A kustomization_changes=()
 declare -A changes_map=()
 
-
-
-# changes=$1
-# ref=$1
 kustomizations_root=$1
-# pushd $2
-# changes=$(git diff $(git merge-base HEAD $ref) --name-only)
-# popd
 
-# >&2 echo "kustomizations_root: $kustomizations_root"
-# >&2 echo "pwd: $(pwd)"
-# >&2 echo "ls -la: $(ls -la)"
-
-
-# >&2 echo "pwd: $(pwd)"
-# >&2 echo "kustomizations_root: $kustomizations_root"
-
-# changes=$(git diff $(git merge-base HEAD origin/$GITHUB_BASE_REF) --name-only)
 while IFS= read -r change; do
     changes_map[$change]="1"
     changes_map[$(dirname $change)]="1"
-#     echo $change
-#     # echo $(dirname $change)/kustomization.yaml
-#     if [[ "${change##*/}" == "kustomization.yaml" ]];then
-#         # echo kustomization.yaml itself has changed
-#         kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$(dirname $change))]="1"
-#     elif [[ -f "$(dirname $change)/kustomization.yaml" ]];then
-#         echo "kustomization.yaml in directory"
-#         # check if the kustomization.yaml references the change
-#         # FIXME do this not only for the kustomization in the current dir
-#         change_in_kustomization=$(cat $(dirname $change)/kustomization.yaml | yq ".resources[] | select(. == \"$(realpath --relative-to $(dirname $change) $change)\")")
-#         # echo "change_in_kustomization: $change_in_kustomization"
-#         if [[ "$change_in_kustomization" != "" ]]; then
-#             # echo "adding kustomization to changes $(dirname $change)/kustomization.yaml"
-#             kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$(dirname $change))]="1"
-#         fi
-#     elif [[ "$change" =~ .*\.ya?ml ]]; then
-#         echo "no kustomization.yaml: $kustomizations_root/$(dirname $change)"
-#         kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$(dirname $change))]="1"
-#     fi
 done <<< "${GIT_CHANGES}"
-
-# function kustomization_yaml {
-    # echo "Parameter #1 is $1"
-    # echo "Parameter #2 is $2"
-    # echo "Parameter #3 is $3"
-    # declare -n ma=$2
-
-    # eval "declare -A visited_$3="${2#*=}
-    # eval "declare -A ma="${2#*=}
-    # proof that array was successfully created
-    # declare -p ma
-    # declare -n "data_ref_$3"=$2
-    # data_ref[b]="Barney Rubble"
-
-    # echo ${data_ref[a]} ${data_ref[b]}
-
-    # va=$1
-    # i=$3
-    # # ma=$2
-    # echo "data_ref: ${$2[@]}"
-    # if [[ ! ${"data_ref_$3"["$1"]} ]]; then 
-    # # if [[ ! " ${ma[*]} " =~ " $va " ]]; then
-    #     # ma+=( $1 )
-    #     data_ref[$1]="1"
-    #     echo "ma: ${!"data_ref_$3"[@]}"
-    #     let "i++"
-    #     # ma+=($1)
-    #     # echo "ma: ${ma[@]}"
-    #     kustomization_yaml "test" $2 i
-    # fi
-# }
-
 
 kustomization_yaml()
 {
-    # local kustomization_yaml=$1 name=$2"[@]"
-    # local -a 'arraykeys=("${!'"$2"'[@]}")' 'lettersElements=(${!name})' visited
-    # echo "x: $x"
-    # echo ""
-    # for ((i=0; i<${#lettersElements[*]}; i++));
-    # do
-    #     visited[${arraykeys[$i]}]=${lettersElements[$i]}
-    # done
-    # visited[$x]="test_$x"
-    # visited[(2*$x)]=$x
-    # if [ $1 -lt 5 ]
-    # echo ${visited[@]} "|" ${!visited[@]}
-    # if [[ ! ${visited[test]+exists} ]];
-    # then
-    #     visited["test"]="1"
-    #     echo ${visited[@]} "|" ${!visited[@]}
-    #     kustomization_yaml "test" visited
-    # fi
-    # # echo ${visited[@]}
-    # echo ${visited[@]} "|" ${!visited[@]}
-#     apiVersion: kustomize.config.k8s.io/v1beta1
-# kind: Kustomization
-# resources:
-# - configmap.yml
-    # resources=$(yq -N eval-all '.resources' $1)
-    # local -a changes_map=(${!changes_map[@]})
-    # local -A changes_map=(${name})
     local -n changes_map_local=$3
     result=()
     # echo "2: $2"
@@ -139,34 +45,16 @@ kustomization_yaml()
     echo ${result[@]}
 }
 
-# echo done
-# exit 0
-
-# function foo {
-#     local -n data_ref=$1
-#     data_ref[b]="Barney Rubble"
-
-#     echo ${data_ref[a]} ${data_ref[b]}
-# }
-
-# declare -A data
-# data[a]="Fred Flintstone"
-# # data[b]="Barney Rubble"
-# foo data
-
 # echo ${!kustomization_changes[@]}
-flux_kustomization_files=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | filename' {} +)
->&2 echo "flux_kustomizations: $flux_kustomization_files"
+# flux_kustomization_files=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | filename' {} +)
+# >&2 echo "flux_kustomizations: $flux_kustomization_files"
 result=()
-while IFS= read -r kustomization_file; do
+
+while (( "$#" )); do
+    kustomization_file=$1
+# while IFS= read -r kustomization_file; do
     >&2 echo "kustomizations_file: $kustomization_file"
 
-    # kustomization_file_relative=$(realpath --relative-to $kustomizations_root $kustomizations_root/$kustomization_file)
-    # echo $(realpath --relative-to . $kustomization)
-    # >&2 echo "kustomizations_root: $kustomizations_root"
-    # >&2 echo "kustomization: $kustomization"
-    # if [[ ${kustomization_changes[$(realpath --relative-to $kustomizations_root $kustomizations_root/$kustomization)]} ]]; then result+=($kustomization); fi    # Exists
-    # if ()
     >&2 echo "realpath --relative-to $kustomizations_root $kustomization_file"
     kustomization_file_path="$(realpath --relative-to $kustomizations_root $kustomization_file)"
 
@@ -208,18 +96,13 @@ while IFS= read -r kustomization_file; do
         done <<< "${kustomization_paths}"
     fi
     # kustomization_path=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | filename' {} +)
-
-    
-
-done <<< "${flux_kustomization_files}"
+    shift
+done
+# done <<< "${flux_kustomization_files}"
 
 IFS=" " read -r -a result <<< "$(echo "${result[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ')"
 echo ${result[@]}
 
-# while IFS= read -r kustomization; do
-#     { kustomize_err="$( { kustomize build $kustomization; } 2>&1 1> /dev/null)"; } || echo "kustomize build $kustomization failed: $kustomize_err"
-    
-# done <<< "${result}"
 
 
 

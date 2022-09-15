@@ -1,0 +1,22 @@
+name: flux-find-kustomizations
+description: find flux kustomization definitions
+inputs:
+  kustomizations-root:
+    description: 'root directory containing kustomizations'
+    default: .
+outputs:
+  kustomizations:
+    description: "flux kustomization definitions"
+    value: ${{ steps.find_kustomizations.outputs.kustomizations }}
+runs:
+  using: "composite"
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: find kustomizations
+      id: find_kustomizations
+      shell: bash
+      run: |
+        kustomizations=$(get-kustomizations.sh ${{ inputs.ref }} "${{ inputs.kustomizations-root }}")
+        echo "kustomizations: $kustomizations"
+        echo "::set-output name=kustomizations::$kustomizations"
