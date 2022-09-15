@@ -17,6 +17,6 @@ runs:
       id: find_kustomizations
       shell: bash
       run: |
-        kustomizations=$(get-kustomizations.sh ${{ inputs.ref }} "${{ inputs.kustomizations-root }}")
+        kustomizations=$(find-kustomizations.sh ${{ inputs.ref }} "${{ inputs.kustomizations-root }}")
         echo "kustomizations: $kustomizations"
         echo "::set-output name=kustomizations::$kustomizations"
