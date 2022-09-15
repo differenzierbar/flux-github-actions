@@ -23,4 +23,5 @@ runs:
       id: conftest
       shell: bash
       run: |
+        cat "${{ inputs.input }}"
         cat "${{ inputs.input }}" | conftest.sh ${{ inputs.directory }} ${{ inputs.root-directory }}
