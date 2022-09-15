@@ -4,9 +4,6 @@ inputs:
   files:
     description: 'files that will be validated with conftest'
     required: true
-  policy-parent-directory-bottom:
-    description: 'directory from that policy subdirectories will be used'
-    required: true
   policy-parent-directory-top:
     description: 'ancestor directory up to that policy subdirectories will be used'
     default: .
@@ -19,4 +16,4 @@ runs:
       id: conftest
       shell: bash
       run: |
-        conftest.sh ${{ inputs.policy-parent-directory-top }} ${{ inputs.policy-parent-directory-bottom }} ${{ inputs.files }}
+        conftest.sh ${{ inputs.policy-parent-directory-top }} ${{ inputs.files }}

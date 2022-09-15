@@ -77,7 +77,6 @@ jobs:
         with: 
           files: flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
           policy-parent-directory-top: flux-github-actions-test
-          policy-parent-directory-bottom: flux-github-actions-test/${{ matrix.kustomization }}
   validation-plain-yaml:
     needs: find
     runs-on: ubuntu-22.04
@@ -108,4 +107,3 @@ jobs:
         with: 
           files: ${{ steps.find-yml-files.outputs.files }}
           policy-parent-directory-top: flux-github-actions-test
-          policy-parent-directory-bottom: flux-github-actions-test/${{ matrix.kustomization }}
