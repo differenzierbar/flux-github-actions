@@ -5,6 +5,7 @@ declare -A kustomization_changes=()
 declare -A changes_map=()
 
 kustomizations_root=$1
+shift
 
 while IFS= read -r change; do
     changes_map[$change]="1"
