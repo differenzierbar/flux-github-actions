@@ -100,7 +100,7 @@ jobs:
         uses: "./generic/find-files"
         with: 
           directory: flux-github-actions-test/${{ matrix.kustomization }}
-          pattern: *.yml
+          pattern: "*.yml"
       - name: conftest-test
         id: conftest-test
         uses: "./conftest/conftest-test"
