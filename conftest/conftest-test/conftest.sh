@@ -24,7 +24,7 @@ while IFS= read -r input_file; do
         echo "executing 'conftest test $input_file ${policy_folders[@]/#/"-p "} -o github'"
         conftest test $input_file ${policy_folders[@]/#/"-p "} -o github
     else
-        echo "no policy folders found - skipping contest for $input_file
+        echo "no policy folders found - skipping contest for $input_file"
     fi
 
 done <<< "$@"
