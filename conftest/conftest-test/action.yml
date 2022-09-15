@@ -9,7 +9,7 @@ inputs:
     required: true
   root-directory:
     description: 'ancestor directory up to that policy subdirectories will be used'
-    default: /
+    default: .
 # outputs:
 #   kustomization-changes:
 #     description: "kustomization roots that contain changes"

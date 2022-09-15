@@ -1,5 +1,5 @@
-name: kustomize-changes
-description: find changes in flux kustomization trees 
+name: find-kustomization-with-changes
+description: find flux kustomization definitions with changes in their kustomization trees 
 inputs:
   # changes:
   #   description: 'changes to take into account'
@@ -11,13 +11,10 @@ inputs:
     description: 'root directory containing kustomizations'
     # required: true
     default: .
-  kustomizations:
-    description: 'flux kustomization files'
-    required: true
 outputs:
-  kustomization-changes:
+  kustomizations:
     description: "kustomization roots that contain changes"
-    value: ${{ steps.find_kustomization_changes.outputs.kustomization_changes }}
+    value: ${{ steps.find_kustomization_changes.outputs.kustomizations }}
 runs:
   using: "composite"
   steps:
@@ -30,6 +27,6 @@ runs:
         changes=()
         changes+=(${{ inputs.changes }})
         echo "changes: $changes"
-        kustomization_changes=$(get-kustomization-changes.sh ${{ inputs.kustomizations-root }} ${{ inputs.kustomizations }})
-        echo "kustomization_changes: $kustomization_changes"
-        echo "::set-output name=kustomization_changes::$kustomization_changes"
+        kustomizations=$(find-kustomizations-with-changes.sh ${{ inputs.kustomizations-root }})
+        echo "kustomizations: $kustomizations"
+        echo "::set-output name=kustomizations::$kustomizations"
