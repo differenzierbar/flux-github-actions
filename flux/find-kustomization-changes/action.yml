@@ -30,6 +30,6 @@ runs:
         changes=()
         changes+=(${{ inputs.changes }})
         echo "changes: $changes"
-        kustomization_changes=$(get-kustomization-changes.sh "${{ inputs.kustomizations-root }}" "${{ inputs.kustomizations }}")
+        kustomization_changes=$(get-kustomization-changes.sh ${{ inputs.kustomizations-root }} ${{ inputs.kustomizations }})
         echo "kustomization_changes: $kustomization_changes"
         echo "::set-output name=kustomization_changes::$kustomization_changes"
