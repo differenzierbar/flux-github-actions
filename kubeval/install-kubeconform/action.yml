@@ -1,0 +1,13 @@
+name: install-kubeconform
+description: install https://github.com/yannh/kubeconform to /usr/local/bin
+inputs:
+  version: 
+    description: kubeconform version to install
+    default: v0.4.14
+runs:
+  using: "composite"
+  steps:
+    - name: install
+      shell: bash
+      run: |
+        curl -L https://github.com/yannh/kubeconform/releases/download/${{ inputs.version }}/kubeconform-linux-amd64.tar.gz | sudo tar -xz -C /usr/local/bin

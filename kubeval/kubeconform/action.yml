@@ -1,0 +1,16 @@
+name: kubeconform
+description: execute kubeconform
+inputs:
+  files:
+    description: 'files that will be validated with kubeconform'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: execute kubeconform
+      id: kubeconform
+      shell: bash
+      run: |
+        kubeconform.sh ${{ inputs.files }}
