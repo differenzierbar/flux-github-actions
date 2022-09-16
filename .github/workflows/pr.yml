@@ -82,6 +82,10 @@ jobs:
         id: kustomize_build
         run: |
           kustomize build flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }} > flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
+      - name: kubeval
+        uses: "./kubeval/kubeval"
+        with:
+          files: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
       - name: conftest-test
         id: conftest-test
         uses: "./conftest/conftest-test"
