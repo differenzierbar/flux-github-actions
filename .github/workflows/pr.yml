@@ -63,6 +63,8 @@ jobs:
         uses: ./kustomize/install-kustomize
       - name: install-conftest
         uses: ./conftest/install-conftest
+      - name: install-kubeval
+        uses: ./kubeval/install-kubeval
       - name: conftest-test-kustomization
         id: conftest-test-kustomization
         uses: "./conftest/conftest-test"
