@@ -63,19 +63,30 @@ jobs:
         uses: ./kustomize/install-kustomize
       - name: install-conftest
         uses: ./conftest/install-conftest
-      - name: generate kustomization yaml
-        uses: "./kustomize/generate-kustomization-yaml"
-        with: 
-          directory: flux-github-actions-test/${{ matrix.kustomization }}
-      - name: kustomize build
-        id: kustomize_build
-        run: |
-          kustomize build flux-github-actions-test/${{ matrix.kustomization }} > flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
       - name: conftest-test
         id: conftest-test
         uses: "./conftest/conftest-test"
         with: 
-          files: flux-github-actions-test/${{ matrix.kustomization }}/kustomize_build_output.yaml
+          files: ${{ matrix.kustomization }}
+          policy-parent-directory-top: flux-github-actions-test
+      - name: get-kustomization-path
+        id: get-kustomization-path
+        uses: "./flux/get-kustomization-path"
+        with:
+          kustomizations: ${{ matrix.kustomization }}
+      - name: generate kustomization yaml
+        uses: "./kustomize/generate-kustomization-yaml"
+        with: 
+          directory: flux-github-actions-test/${{ steps.get-kustomization-path.output.kustomization-path }}
+      - name: kustomize build
+        id: kustomize_build
+        run: |
+          kustomize build flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }} > flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
+      - name: conftest-test
+        id: conftest-test
+        uses: "./conftest/conftest-test"
+        with: 
+          files: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
           policy-parent-directory-top: flux-github-actions-test
   validation-plain-yaml:
     needs: find
@@ -93,20 +104,31 @@ jobs:
           fetch-depth: 0
           repository: 'differenzierbar/flux-github-actions-test'
           ref: main
+      - name: install-kubeval
+        uses: ./kubeval/install-kubeval
+      - name: install-conftest
+        uses: ./conftest/install-conftest
+      - name: conftest-test
+        id: conftest-test
+        uses: "./conftest/conftest-test"
+        with: 
+          files: ${{ matrix.kustomization }}
+          policy-parent-directory-top: flux-github-actions-test
+      - name: get-kustomization-path
+        id: get-kustomization-path
+        uses: "./flux/get-kustomization-path"
+        with:
+          kustomizations: ${{ matrix.kustomization }}
       - name: find yml files
         id: find-yml-files
         uses: "./generic/find-files"
         with: 
-          directory: flux-github-actions-test/${{ matrix.kustomization }}
+          directory: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}
           pattern: "*.yml"
-      - name: install-kubeval
-        uses: ./kubeval/install-kubeval
       - name: kubeval
         uses: "./kubeval/kubeval"
         with: 
           files: ${{ steps.find-yml-files.outputs.files }}
-      - name: install-conftest
-        uses: ./conftest/install-conftest
       - name: conftest-test
         id: conftest-test
         uses: "./conftest/conftest-test"
