@@ -93,14 +93,20 @@ jobs:
           fetch-depth: 0
           repository: 'differenzierbar/flux-github-actions-test'
           ref: main
-      - name: install-conftest
-        uses: ./conftest/install-conftest
       - name: find yml files
         id: find-yml-files
         uses: "./generic/find-files"
         with: 
           directory: flux-github-actions-test/${{ matrix.kustomization }}
           pattern: "*.yml"
+      - name: install-kubeval
+        uses: ./kubeval/install-kubeval
+      - name: kubeval
+        uses: "./kubeval/kubeval"
+        with: 
+          files: ${{ steps.find-yml-files.outputs.files }}
+      - name: install-conftest
+        uses: ./conftest/install-conftest
       - name: conftest-test
         id: conftest-test
         uses: "./conftest/conftest-test"

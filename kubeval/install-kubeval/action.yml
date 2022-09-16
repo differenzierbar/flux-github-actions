@@ -1,0 +1,13 @@
+name: install-kubeval
+description: install https://github.com/instrumenta/kubeval to /usr/local/bin
+inputs:
+  version: 
+    description: kubeval version to install
+    default: v0.16.1
+runs:
+  using: "composite"
+  steps:
+    - name: install
+      shell: bash
+      run: |
+        curl -L https://github.com/instrumenta/kubeval/releases/download/${{ inputs.version }}/kubeval-linux-amd64.tar.gz | sudo tar -xz -C /usr/local/bin
