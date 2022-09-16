@@ -1,0 +1,16 @@
+name: kubeval
+description: execute kubeval
+inputs:
+  files:
+    description: 'files that will be validated with kubeval'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: execute kubeval
+      id: kubeval
+      shell: bash
+      run: |
+        kubeval.sh ${{ inputs.files }}
