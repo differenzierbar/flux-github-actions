@@ -6,7 +6,7 @@ inputs:
 outputs:
   kustomization-path:
     description: "flux kustomization path"
-    value: ${{ steps.find_kustomizations.outputs.kustomization-path }}
+    value: ${{ steps.get-kustomization-path.outputs.kustomization-path }}
 runs:
   using: "composite"
   steps:
@@ -19,3 +19,4 @@ runs:
         kustomization_path=$(get-kustomization-path.sh "${{ inputs.kustomizations }}")
         echo "kustomization_path: $kustomization_path"
         echo "::set-output name=kustomization-path::$kustomization_path"
+
