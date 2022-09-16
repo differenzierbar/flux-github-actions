@@ -77,7 +77,7 @@ jobs:
       - name: generate kustomization yaml
         uses: "./kustomize/generate-kustomization-yaml"
         with:
-          directory: flux-github-actions-test/${{ steps.get-kustomization-path.output.kustomization-path }}
+          directory: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}
       - name: kustomize build
         id: kustomize_build
         run: |
