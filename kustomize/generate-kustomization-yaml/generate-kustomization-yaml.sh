@@ -3,8 +3,8 @@
 set -e
 path="$(readlink -f "$1")"
 if [[ ! -f "$path/kustomization.yaml" ]]; then
+    echo "generating $path/kustomization.yaml"
     pushd $path
-    # FIMXE recursive find yaml files
     kustomize create --autodetect --recursive
     cat kustomization.yaml
     popd
