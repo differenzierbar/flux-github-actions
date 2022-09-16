@@ -100,7 +100,7 @@ jobs:
           directory: flux-github-actions-test/${{ matrix.kustomization }}
           pattern: "*.yml"
       - name: install-kubeval
-        uses: ./kubeval/install-conftest
+        uses: ./kubeval/install-kubeval
       - name: kubeval
         uses: "./kubeval/kubeval"
         with: 
