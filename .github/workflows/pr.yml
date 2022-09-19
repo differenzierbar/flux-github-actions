@@ -33,6 +33,7 @@ jobs:
         uses: "./flux/find-kustomizations-with-changes"
         with:
           kustomizations-root: ./flux-github-actions-test
+          filename-pattern: .*?\.(ya?ml|rego)
       - name: set matrix
         id: set-matrix
         run: |
