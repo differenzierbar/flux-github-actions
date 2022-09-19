@@ -20,6 +20,6 @@ runs:
       id: find_kustomization_changes
       shell: bash
       run: |
-        kustomizations=$(find-kustomizations-with-changes.sh ${{ inputs.kustomizations-root }} ${{ inputs.filename-pattern }})
+        kustomizations=$(find-kustomizations-with-changes.sh ${{ inputs.kustomizations-root }} "${{ inputs.filename-pattern }}")
         echo "kustomizations: $kustomizations"
         echo "::set-output name=kustomizations::$kustomizations"
