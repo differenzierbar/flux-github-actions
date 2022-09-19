@@ -1,16 +1,12 @@
 name: find-kustomization-with-changes
 description: find flux kustomization definitions with changes in their kustomization trees 
 inputs:
-  # changes:
-  #   description: 'changes to take into account'
-  #   required: true
-  # ref:
-  #   description: 'git ref to compare to'
-  #   required: true
   kustomizations-root:
     description: 'root directory containing kustomizations'
-    # required: true
     default: .
+  filename-pattern:
+    description: pattern for relevant (changed) filenames
+    default: .*?\.ya?ml
 outputs:
   kustomizations:
     description: "kustomization roots that contain changes"
@@ -24,6 +20,6 @@ runs:
       id: find_kustomization_changes
       shell: bash
       run: |
-        kustomizations=$(find-kustomizations-with-changes.sh ${{ inputs.kustomizations-root }})
+        kustomizations=$(find-kustomizations-with-changes.sh ${{ inputs.kustomizations-root }} ${{ inputs.filename-pattern }})
         echo "kustomizations: $kustomizations"
         echo "::set-output name=kustomizations::$kustomizations"

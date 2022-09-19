@@ -5,6 +5,7 @@ declare -A kustomization_changes=()
 declare -A changes_map=()
 
 kustomizations_root=$1
+filename_pattern=$2
 # shift
 
 while IFS= read -r change; do
@@ -14,14 +15,14 @@ done <<< "${GIT_CHANGES}"
 
 kustomization_yaml()
 {
-    local -n changes_map_local=$3
+    local -n changes_map_local=$4
     result=()
     # echo "2: $2"
     >&2 echo "changes_map: ${!changes_map_local[@]}"
     while IFS= read -r resource; do
         # echo "resource: $resource"
-        if [[ "$resource" =~ .*?\.ya?ml ]]; then
-            resource_path="$(realpath --relative-to $1 $1/$2/$resource)"
+        if [[ "$resource" =~ $2 ]]; then
+            resource_path="$(realpath --relative-to $1 $1/$3/$resource)"
             >&2 echo "checking changes : $resource_path"
             >&2 echo "checking changes : ${changes_map_local[$resource_path]}"
             if [[ "${changes_map_local[$resource_path]+exists}" ]]; then
@@ -29,14 +30,14 @@ kustomization_yaml()
                 >&2 echo "result: $result"
             fi
         else
-            child_result=$(kustomization_yaml $1 "$2/$resource" changes_map)
+            child_result=$(kustomization_yaml $1 $2 "$3/$resource" changes_map)
             >&2 echo "child_result: $child_result"
             result+=($child_result)
             # >&2 echo "joined result: $result"
         fi
         # if [[ -f "$(realpath $(dirname $1/$2))/kustomization.yaml" ]];then
-    done <<<$(yq e -o=j -I=0 '.resources[]' "$1/$2/kustomization.yaml" | tr -d \")
-    kustomization_yaml_path="$(realpath --relative-to $1 $1/$2/kustomization.yaml)"
+    done <<<$(yq e -o=j -I=0 '.resources[]' "$1/$3/kustomization.yaml" | tr -d \")
+    kustomization_yaml_path="$(realpath --relative-to $1 $1/$3/kustomization.yaml)"
     # >&2 echo "checking kustomization.yaml changes : $kustomization_yaml_path"
     if [[ "${changes_map_local[$kustomization_yaml_path]+exists}" ]]; then
         >&2 echo "kustomization.yaml changed: $kustomization_yaml_path"
@@ -79,7 +80,7 @@ while IFS= read -r kustomization_file; do
                 # marray[a]="test"
                 # kustomization_yaml "$kustomization_path/kustomization.yaml" marray 0
                 # declare -A visited=()
-                changes=($(kustomization_yaml $kustomizations_root "$kustomization_path_real" changes_map)) # visited
+                changes=($(kustomization_yaml $kustomizations_root $filename_pattern "$kustomization_path_real" changes_map)) # visited
                 >&2 echo "changes: ${changes}"
                 >&2 echo "changes: ${changes[@]}"
                 if [ ${#changes[@]} -gt 0 ]; then
