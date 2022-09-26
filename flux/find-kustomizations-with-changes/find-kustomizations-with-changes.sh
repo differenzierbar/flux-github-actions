@@ -95,6 +95,14 @@ while IFS= read -r kustomization_file; do
                 # FIXME check & add subdirectories
                 if [[ "${changes_map[$kustomization_path_real]+exists}" ]]; then
                     result+=($kustomization_file)
+                else
+                    yml_files=$(find $kustomization_path_real -name "*.yml")
+                    while IFS= read -r yml_file; do
+                        if [[ "${changes_map[$yml_file]+exists}" ]]; then
+                            result+=($kustomization_file)
+                            break
+                        fi
+                    done <<< "${yml_files}"
                 fi
             fi
         done <<< "${kustomization_paths}"
