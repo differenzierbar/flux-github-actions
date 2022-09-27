@@ -96,9 +96,11 @@ while IFS= read -r kustomization_file; do
                 if [[ "${changes_map[$kustomization_path_real]+exists}" ]]; then
                     result+=($kustomization_file)
                 else
+                    # >&2 echo "searching: find $kustomization_path_real -name \"*.yml\""
                     yml_files=$(find $kustomization_path_real -name "*.yml")
                     while IFS= read -r yml_file; do
-                        if [[ "${changes_map[$yml_file]+exists}" ]]; then
+                        # >&2 echo "checking yml file: $yml_file"
+                        if [[ ! -z "$yml_file" ]] && [[ "${changes_map[$yml_file]+exists}" ]]; then
                             result+=($kustomization_file)
                             break
                         fi
