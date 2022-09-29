@@ -4,6 +4,9 @@ inputs:
   kustomizations-root:
     description: 'root directory containing kustomizations'
     default: .
+  git-repository:
+    description: kustomization spec.sourceRef.name filter
+    default: flux-system
 outputs:
   kustomizations:
     description: "flux kustomization definitions"
@@ -17,6 +20,6 @@ runs:
       id: find_kustomizations
       shell: bash
       run: |
-        kustomizations=$(find-kustomizations.sh ${{ inputs.ref }} "${{ inputs.kustomizations-root }}")
+        kustomizations=$(find-kustomizations.sh ${{ inputs.ref }} "${{ inputs.kustomizations-root }}" "${{ inputs.git-repository }}")
         echo "kustomizations: $kustomizations"
         echo "::set-output name=kustomizations::$kustomizations"
