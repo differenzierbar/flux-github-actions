@@ -8,6 +8,8 @@ kustomizations_root=$1
 filename_pattern=$2
 git_repository=$3
 
+>&2 echo "git Repository: $git_repository"
+
 # shift
 
 while IFS= read -r change; do
