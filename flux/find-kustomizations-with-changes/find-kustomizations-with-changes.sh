@@ -6,6 +6,10 @@ declare -A changes_map=()
 
 kustomizations_root=$1
 filename_pattern=$2
+git_repository=$3
+
+>&2 echo "git Repository: $git_repository"
+
 # shift
 
 while IFS= read -r change; do
@@ -48,7 +52,7 @@ kustomization_yaml()
 }
 
 # echo ${!kustomization_changes[@]}
-flux_kustomization_files=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2") | filename' {} +)
+flux_kustomization_files=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all ". | select(.kind == \"Kustomization\" and .apiVersion == \"kustomize.toolkit.fluxcd.io/v1beta2\" and .spec.sourceRef.name == \"$git_repository\") | filename" {} +)
 >&2 echo "flux_kustomizations: $flux_kustomization_files"
 result=()
 
