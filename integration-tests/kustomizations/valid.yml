@@ -1,0 +1,17 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: valid-one
+spec:
+  path: ./kustomizations/valid/repo
+  sourceRef:
+    name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: valid-two
+spec:
+  path: ./kustomizations/valid/with-child
+  sourceRef:
+    name: flux-system
