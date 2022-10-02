@@ -17,25 +17,28 @@ while IFS= read -r kustomization; do
     echo $filename
     echo $query
 
-
-    result=$($here/../flux/get-kustomization-path/get-kustomization-path.sh $filename ".$query")
     kustomization_paths=()
-
-    IFS="$separator" read -r -a kustomization_paths <<< "$result"
-    # echo "result: ${kustomization_paths[@]}"
+    IFS="$separator" read -r -a kustomization_paths <<< $($here/../flux/get-kustomization-path/get-kustomization-path.sh $filename ".$query")
+    echo "kustomization_paths: ${kustomization_paths[@]}"
 
     while IFS= read -r kustomization_path; do
-        result=$($here/../kustomize/get-kustomization-tree/get-kustomization-tree.sh $here/kustomizations $kustomization_path)
+        kustomization_tree=()
+                                                    # result=$($here/../get-kustomization-tree.sh $here testdata/with-child "$separator")
+        IFS="$separator" read -r -a kustomization_tree <<< $($here/../kustomize/get-kustomization-tree/get-kustomization-tree.sh $here/kustomizations $kustomization_path)
+        echo "kustomization_tree: ${kustomization_tree[@]}"
+
+        while IFS= read -r kustomization_yaml; do
+            IFS="$separator" read -r -a kustomization_resources <<< $($here/../kustomize/get-kustomization-resources/get-kustomization-resources.sh $here/kustomizations/$kustomization_yaml)
+            echo "kustomization_resources: ${kustomization_resources[@]}"
+
+            while IFS= read -r kustomization_resource; do
+                echo "$($here/../conftest/conftest-test/conftest.sh $here/$kustomization_resource)"
+                conftest_result=$($here/../conftest/conftest-test/conftest.sh $here/kustomizations $kustomization_resource)
+                echo "conftest result: $conftest_result"
+            done < <(tr ' ' '\n' <<< "${kustomization_resources}")    
+
+        done < <(tr ' ' '\n' <<< "${kustomization_tree}")
+
     done < <(tr ' ' '\n' <<< "${kustomization_paths}")
 
-
-
-# done <<< "${kustomizations}"
 done < <(tr ' ' '\n' <<< "${kustomizations}")
-
-
-    # get-kustomization-tree.sh
-
-    #     get-kustomization-resources.sh
-
-    #         filter-changes
