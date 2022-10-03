@@ -4,10 +4,12 @@ here=`dirname $(realpath $0)`
 
 separator=' '
 
-result=$($here/../filter-changes.sh . $PWD/matching/ "matching/invalid.yml matching/valid notmatching/valid.yml matching/valid.txt" "$separator")
+result=$($here/../filter-lists.sh "matching/valid matching/invalid.yml matching/valid.txt" "matching/invalid.yml matching/valid notmatching/valid.yml matching/valid.txt" "$separator")
+
 
 result_array=()
 IFS="$separator" read -r -a result_array <<< "$result"
+echo "result: ${result_array[@]}"
 
 if [[ ${#result_array[@]} != 3 ]]; then
     echo "3 elements expected"

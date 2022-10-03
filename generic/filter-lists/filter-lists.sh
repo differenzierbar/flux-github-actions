@@ -10,6 +10,4 @@ separator="${3:-$DEFAULT_SEPARATOR}"
 >&2 echo "right: $right"
 >&2 echo "separator: '$separator'"
 
-result=()
-
 echo $(sort <(echo "$left"| tr "$separator" '\n') <(echo "$right"| tr "$separator" '\n') | uniq -d | tr '\n' "$separator") 

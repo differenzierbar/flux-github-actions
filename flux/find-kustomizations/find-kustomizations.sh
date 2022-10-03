@@ -2,10 +2,10 @@
 set -e
 
 DEFAULT_SEPARATOR=' '
+separator="${SEPARATOR:-$DEFAULT_SEPARATOR}"
 
 kustomizations_root=$1
 query=$2
-separator="${3:-$DEFAULT_SEPARATOR}"
 
 >&2 echo "kustomizations_root: $kustomizations_root"
 >&2 echo "query: $query"

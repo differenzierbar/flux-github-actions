@@ -2,11 +2,12 @@
 set -e
 
 DEFAULT_SEPARATOR=' '
+separator="${SEPARATOR:-$DEFAULT_SEPARATOR}"
+
 kustomization_yml_find_pattern=".*/(Kustomization|kustomization\.ya?ml)$"
 
 kustomization_root="$1"
 kustomization_directory="$2"
-separator="${3:-$DEFAULT_SEPARATOR}"
 
 >&2 echo "root_directory: $kustomization_root"
 >&2 echo "kustomization_directory: $kustomization_directory"
