@@ -38,7 +38,21 @@ while IFS= read -r kustomization; do
             IFS="$separator" read -r -a filtered_resources <<< $($here/../generic/filter-lists/filter-lists.sh "$git_changes" "${kustomization_resources[@]}")
             echo "filtered_resources: ${filtered_resources[@]}"
 
+            echo "(dirname $here/kustomizations/$kustomization_yaml): $(dirname $kustomization_yaml)"
+            IFS="$separator" read -r -a policy_folders <<< $($here/../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $here $(dirname kustomizations/$kustomization_yaml) "policy")
+            echo "policy_folders: ${policy_folders[@]}"
 
+            while IFS= read -r resource; do
+                echo "calling conftest for resource $resource"
+                echo "prefixed policy folders: ${policy_folders[@]/#/$here/}"
+                result=$($here/../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$here/}")
+                echo $result
+            done < <(tr ' ' '\n' <<< "${kustomization_resources}")
+
+
+            
+
+            # kubval
 
             # .github/workflows/pr.yml integration-tests/kustomizations/valid/with-child/configmap.yml
 

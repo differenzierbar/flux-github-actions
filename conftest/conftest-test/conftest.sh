@@ -2,22 +2,21 @@
 
 set -e
 
-policy_parent_directory_top="$(readlink -f "$1")"
-input_file=$2
+DEFAULT_SEPARATOR=' '
+separator="${SEPARATOR:-$DEFAULT_SEPARATOR}"
 
-policy_folders=()
-path=$(dirname $input_file)
-while : ; do
-    # echo $path
-    policy_folders+=($(find "$path" -maxdepth 1 -mindepth 1 -name "policy" -type d))
-    [[ $path != $policy_parent_directory_top ]] && [[ $path != "/" ]] || break
-    path="$(readlink -f "$path"/..)"
-done
+input_file="$1"
+# policy_folders="$2"
+IFS=$separator read -r -a policy_folders <<< "$(echo $2)"
+
+>&2 echo "input_file: $input_file"
+>&2 echo "policy_folders: $policy_folders"
+>&2 echo "separator: '$separator'"
 
 # execute conftest
-if [[ ${#policy_folders[@]} > 0 ]];then
-    >&2 echo "executing 'conftest test $input_file ${policy_folders[@]/#/"-p "} -o github'"
-    conftest test $input_file ${policy_folders[@]/#/"-p "} -o github
-else
-    >&2 echo "no policy folders found - skipping conftest for $input_file"
-fi
+# if [[ ${#policy_folders[@]} > 0 ]];then
+>&2 echo "executing 'conftest test $input_file ${policy_folders[@]/#/"-p "} -o github'"
+conftest test $input_file ${policy_folders[@]/#/"-p "} -o github
+# else
+#     >&2 echo "no policy folders found - skipping conftest for $input_file"
+# fi

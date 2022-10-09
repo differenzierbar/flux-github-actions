@@ -2,10 +2,9 @@
 
 here=`dirname $(realpath $0)`
 
-separator=' '
+export SEPARATOR=' '
 
-result=$($here/../filter-lists.sh "matching/valid matching/invalid.yml matching/valid.txt" "matching/invalid.yml matching/valid notmatching/valid.yml matching/valid.txt" "$separator")
-
+result=$($here/../filter-lists.sh "matching/valid matching/invalid.yml matching/valid.txt" "matching/invalid.yml matching/valid notmatching/valid.yml matching/valid.txt")
 
 result_array=()
 IFS="$separator" read -r -a result_array <<< "$result"
