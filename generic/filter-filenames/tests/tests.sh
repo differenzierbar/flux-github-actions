@@ -5,6 +5,7 @@ here=`dirname $(realpath $0)`
 
 export SEPARATOR=' '
 
+# fixed sort order on different installations/default locales
 export LC_ALL=C
 
 result=$($here/../filter-filenames.sh '\.ya?ml$' "matching/invalid.yml notmatching/valid matching.yaml matching/valid.yml notmatching/valid.txt notmatching.xml" "$separator")
