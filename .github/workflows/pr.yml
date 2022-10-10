@@ -26,6 +26,8 @@ jobs:
           generic/find-in-ancestor-folders/tests/tests.sh
           kustomize/get-kustomization-resources/tests/tests.sh
           kustomize/get-kustomization-tree/tests/tests.sh
+
+          integration-tests/integration-test.sh
       # - name: install
       #   run: |
       #     sudo apt-get install jq jo
