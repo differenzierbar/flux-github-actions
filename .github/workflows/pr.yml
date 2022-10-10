@@ -16,6 +16,7 @@ jobs:
         id: tests
         shell: bash
         run: |
+          set -x
           conftest/conftest-test/tests/tests.sh
           flux/find-kustomizations/tests/tests.sh
           flux/get-kustomization-path/tests/tests.sh
