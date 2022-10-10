@@ -15,14 +15,14 @@ jobs:
         shell: bash
         run: |
           conftest/conftest-test/tests/tests.sh
-          flux-github-actions/flux/find-kustomizations/tests/tests.sh
-          flux-github-actions/flux/get-kustomization-path/tests/tests.sh
-          flux-github-actions/generic/filter-filenames/tests/tests.sh
-          flux-github-actions/generic/filter-lists/tests/tests.sh
-          flux-github-actions/generic/find-files/tests/tests.sh
-          flux-github-actions/generic/find-in-ancestor-folders/tests/tests.sh
-          flux-github-actions/kustomize/get-kustomization-resources/tests/tests.sh
-          flux-github-actions/kustomize/get-kustomization-tree/tests/tests.sh
+          flux/find-kustomizations/tests/tests.sh
+          flux/get-kustomization-path/tests/tests.sh
+          generic/filter-filenames/tests/tests.sh
+          generic/filter-lists/tests/tests.sh
+          generic/find-files/tests/tests.sh
+          generic/find-in-ancestor-folders/tests/tests.sh
+          kustomize/get-kustomization-resources/tests/tests.sh
+          kustomize/get-kustomization-tree/tests/tests.sh
       # - name: install
       #   run: |
       #     sudo apt-get install jq jo
