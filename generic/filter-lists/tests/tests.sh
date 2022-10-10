@@ -1,6 +1,7 @@
 #!/bin/bash
 
 here=`dirname $(realpath $0)`
+. $here/../../../.tests/assert
 
 export SEPARATOR=' '
 
