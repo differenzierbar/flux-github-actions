@@ -4,141 +4,150 @@ on:
     branches:
       - main
 jobs:
-  find:
-    name: find
+  validation:
+    name: validation
     runs-on: ubuntu-22.04
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout flux-github-actions
         uses: actions/checkout@v3
-      - name: Checkout flux-github-actions-test
-        uses: actions/checkout@v3
-        with:
-          path: flux-github-actions-test
-          fetch-depth: 0
-          repository: 'differenzierbar/flux-github-actions-test'
-          ref: main
-      - name: install
+      - name: tests
+        id: tests
+        shell: bash
         run: |
-          sudo apt-get install jq jo
-      - name: find git changes
-        id: find_git_changes
-        uses: "./git/git-changes"
-        with:
-          ref: 0ec447462b9b53f12ff7edd68345ed6f3d593aa0 
-          dir: ./flux-github-actions-test
-      - name: find kustomization with changes
-        id: find-kustomizations-with_changes
-        uses: "./flux/find-kustomizations-with-changes"
-        with:
-          kustomizations-root: ./flux-github-actions-test
-          filename-pattern: .*?\.(ya?ml|rego)
-      - name: set matrix
-        id: set-matrix
-        run: |
-          set -ex
-          json_array=$(jo -a ${{ steps.find-kustomizations-with_changes.outputs.kustomizations }})
-          if [[ $(echo $json_array | jq '. | length') -gt 0 ]]; then
-            echo "::set-output name=matrix::{\"kustomization\": $json_array}"
-          else 
-            echo "::set-output name=matrix::"
-          fi
-  validation-with-kustomize:
-    needs: find
-    runs-on: ubuntu-22.04
-    if: ${{ needs.find.outputs.matrix != '' }}
-    strategy:
-      matrix: ${{fromJSON(needs.find.outputs.matrix)}}
-    steps:
-      - name: Checkout flux-github-actions
-        uses: actions/checkout@v3
-      - name: Checkout flux-github-actions-test
-        uses: actions/checkout@v3
-        with:
-          path: flux-github-actions-test
-          fetch-depth: 0
-          repository: 'differenzierbar/flux-github-actions-test'
-          ref: main
-      - name: install-kustomize
-        uses: ./kustomize/install-kustomize
-      - name: install-conftest
-        uses: ./conftest/install-conftest
-      - name: install-kubeval
-        uses: ./kubeval/install-kubeval
-      - name: conftest-test-kustomization
-        id: conftest-test-kustomization
-        uses: "./conftest/conftest-test"
-        with: 
-          files: ${{ matrix.kustomization }}
-          policy-parent-directory-top: flux-github-actions-test
-      - name: get-kustomization-path
-        id: get-kustomization-path
-        uses: "./flux/get-kustomization-path"
-        with:
-          kustomizations: ${{ matrix.kustomization }}
-      - name: generate kustomization yaml
-        uses: "./kustomize/generate-kustomization-yaml"
-        with:
-          directory: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}
-      - name: kustomize build
-        id: kustomize_build
-        run: |
-          kustomize build flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }} > flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
-      - name: kubeval
-        uses: "./kubeval/kubeval"
-        with:
-          files: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
-      - name: conftest-test
-        id: conftest-test
-        uses: "./conftest/conftest-test"
-        with:
-          files: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
-          policy-parent-directory-top: flux-github-actions-test
-  validation-plain-yaml:
-    needs: find
-    runs-on: ubuntu-22.04
-    if: ${{ needs.find.outputs.matrix != '' }}
-    strategy:
-      matrix: ${{fromJSON(needs.find.outputs.matrix)}}
-    steps:
-      - name: Checkout flux-github-actions
-        uses: actions/checkout@v3
-      - name: Checkout flux-github-actions-test
-        uses: actions/checkout@v3
-        with:
-          path: flux-github-actions-test
-          fetch-depth: 0
-          repository: 'differenzierbar/flux-github-actions-test'
-          ref: main
-      - name: install-kubeval
-        uses: ./kubeval/install-kubeval
-      - name: install-conftest
-        uses: ./conftest/install-conftest
-      - name: conftest-test-kustomization
-        id: conftest-test-kustomization
-        uses: "./conftest/conftest-test"
-        with:
-          files: ${{ matrix.kustomization }}
-          policy-parent-directory-top: flux-github-actions-test
-      - name: get-kustomization-path
-        id: get-kustomization-path
-        uses: "./flux/get-kustomization-path"
-        with:
-          kustomizations: ${{ matrix.kustomization }}
-      - name: find yml files
-        id: find-yml-files
-        uses: "./generic/find-files"
-        with: 
-          directory: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}
-          pattern: "*.yml"
-      - name: kubeval
-        uses: "./kubeval/kubeval"
-        with:
-          files: ${{ steps.find-yml-files.outputs.files }}
-      - name: conftest-test
-        id: conftest-test
-        uses: "./conftest/conftest-test"
-        with:
-          files: ${{ steps.find-yml-files.outputs.files }}
-          policy-parent-directory-top: flux-github-actions-test
+          conftest/conftest-test/tests/tests.sh
+          flux-github-actions/flux/find-kustomizations/tests/tests.sh
+          flux-github-actions/flux/get-kustomization-path/tests/tests.sh
+          flux-github-actions/generic/filter-filenames/tests/tests.sh
+          flux-github-actions/generic/filter-lists/tests/tests.sh
+          flux-github-actions/generic/find-files/tests/tests.sh
+          flux-github-actions/generic/find-in-ancestor-folders/tests/tests.sh
+          flux-github-actions/kustomize/get-kustomization-resources/tests/tests.sh
+          flux-github-actions/kustomize/get-kustomization-tree/tests/tests.sh
+      # - name: install
+      #   run: |
+      #     sudo apt-get install jq jo
+      # - name: find git changes
+      #   id: find_git_changes
+      #   uses: "./git/git-changes"
+      #   with:
+      #     ref: 0ec447462b9b53f12ff7edd68345ed6f3d593aa0 
+      #     dir: ./flux-github-actions-test
+      # - name: find kustomization with changes
+      #   id: find-kustomizations-with_changes
+      #   uses: "./flux/find-kustomizations-with-changes"
+      #   with:
+      #     kustomizations-root: ./flux-github-actions-test
+      #     filename-pattern: .*?\.(ya?ml|rego)
+      # - name: set matrix
+      #   id: set-matrix
+      #   run: |
+      #     set -ex
+      #     json_array=$(jo -a ${{ steps.find-kustomizations-with_changes.outputs.kustomizations }})
+      #     if [[ $(echo $json_array | jq '. | length') -gt 0 ]]; then
+      #       echo "::set-output name=matrix::{\"kustomization\": $json_array}"
+      #     else 
+      #       echo "::set-output name=matrix::"
+      #     fi
+  # validation-with-kustomize:
+  #   needs: find
+  #   runs-on: ubuntu-22.04
+  #   if: ${{ needs.find.outputs.matrix != '' }}
+  #   strategy:
+  #     matrix: ${{fromJSON(needs.find.outputs.matrix)}}
+  #   steps:
+  #     - name: Checkout flux-github-actions
+  #       uses: actions/checkout@v3
+  #     - name: Checkout flux-github-actions-test
+  #       uses: actions/checkout@v3
+  #       with:
+  #         path: flux-github-actions-test
+  #         fetch-depth: 0
+  #         repository: 'differenzierbar/flux-github-actions-test'
+  #         ref: main
+  #     - name: install-kustomize
+  #       uses: ./kustomize/install-kustomize
+  #     - name: install-conftest
+  #       uses: ./conftest/install-conftest
+  #     - name: install-kubeval
+  #       uses: ./kubeval/install-kubeval
+  #     - name: conftest-test-kustomization
+  #       id: conftest-test-kustomization
+  #       uses: "./conftest/conftest-test"
+  #       with: 
+  #         files: ${{ matrix.kustomization }}
+  #         policy-parent-directory-top: flux-github-actions-test
+  #     - name: get-kustomization-path
+  #       id: get-kustomization-path
+  #       uses: "./flux/get-kustomization-path"
+  #       with:
+  #         kustomizations: ${{ matrix.kustomization }}
+  #     - name: generate kustomization yaml
+  #       uses: "./kustomize/generate-kustomization-yaml"
+  #       with:
+  #         directory: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}
+  #     - name: kustomize build
+  #       id: kustomize_build
+  #       run: |
+  #         kustomize build flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }} > flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
+  #     - name: kubeval
+  #       uses: "./kubeval/kubeval"
+  #       with:
+  #         files: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
+  #     - name: conftest-test
+  #       id: conftest-test
+  #       uses: "./conftest/conftest-test"
+  #       with:
+  #         files: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}/kustomize_build_output.yaml
+  #         policy-parent-directory-top: flux-github-actions-test
+  # validation-plain-yaml:
+  #   needs: find
+  #   runs-on: ubuntu-22.04
+  #   if: ${{ needs.find.outputs.matrix != '' }}
+  #   strategy:
+  #     matrix: ${{fromJSON(needs.find.outputs.matrix)}}
+  #   steps:
+  #     - name: Checkout flux-github-actions
+  #       uses: actions/checkout@v3
+  #     - name: Checkout flux-github-actions-test
+  #       uses: actions/checkout@v3
+  #       with:
+  #         path: flux-github-actions-test
+  #         fetch-depth: 0
+  #         repository: 'differenzierbar/flux-github-actions-test'
+  #         ref: main
+  #     - name: install-kubeval
+  #       uses: ./kubeval/install-kubeval
+  #     - name: install-conftest
+  #       uses: ./conftest/install-conftest
+  #     - name: conftest-test-kustomization
+  #       id: conftest-test-kustomization
+  #       uses: "./conftest/conftest-test"
+  #       with:
+  #         files: ${{ matrix.kustomization }}
+  #         policy-parent-directory-top: flux-github-actions-test
+  #     - name: get-kustomization-path
+  #       id: get-kustomization-path
+  #       uses: "./flux/get-kustomization-path"
+  #       with:
+  #         kustomizations: ${{ matrix.kustomization }}
+  #     - name: find yml files
+  #       id: find-yml-files
+  #       uses: "./generic/find-files"
+  #       with: 
+  #         directory: flux-github-actions-test/${{ steps.get-kustomization-path.outputs.kustomization-path }}
+  #         pattern: "*.yml"
+  #     - name: kubeval
+  #       uses: "./kubeval/kubeval"
+  #       with:
+  #         files: ${{ steps.find-yml-files.outputs.files }}
+  #     - name: conftest-test
+  #       id: conftest-test
+  #       uses: "./conftest/conftest-test"
+  #       with:
+  #         files: ${{ steps.find-yml-files.outputs.files }}
+  #         policy-parent-directory-top: flux-github-actions-test
+
+    # concurrency:
+    #   # New commit on branch cancels running workflows of the same branch
+    #   group: ${{ github.workflow }}-${{ github.ref }}
+    #   cancel-in-progress: true

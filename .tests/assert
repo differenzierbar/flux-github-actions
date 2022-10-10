@@ -10,16 +10,22 @@ assert() {
     IFS="$SEPARATOR" read -r -a actual_array <<< "$actual"
     echo "  actual: ${actual_array[@]}"
 
+    success=true
+
     if [[ ${#expected_array[@]} != ${#actual_array[@]} ]]; then
         echo "${#expected_array[@]} elements expected"
-        exit 1
+        success=false
     fi
 
     for (( i=0; i<=${#expected_array[@]}; i++ ))
     do 
         if [[ "${expected_array[$i]}" != "${actual_array[$i]}" ]]; then
             echo "${expected_array[$i]} expected"
-            exit 1
+            success=false
         fi
     done
+
+    if [ "$success" = false ] ; then
+        return 1
+    fi
 }
