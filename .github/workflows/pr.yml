@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout flux-github-actions
         uses: actions/checkout@v3
+      - name: install-conftest
+        uses: ./conftest/install-conftest
       - name: tests
         id: tests
         shell: bash
