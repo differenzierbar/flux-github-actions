@@ -35,21 +35,26 @@ fi
 >&2 echo "summary: $summary"
 >&2 echo "text: $text"
 
-samples=("")
+# create checkrun
+checkrun_create="{\"name\":\"$name\",\"head_sha\":\"${GIT_SHA}\",\"status\":\"in_progress\",\"started_at\":\"$(date -u +"%Y-%m-%dT%H:%M:%S"Z)\",\"output\":{\"title\":\""$name"\",\"summary\":\"\",\"text\":\"\"}}"
+>&2 echo "$checkrun_create" | jq
 if [ "${DRY_RUN,,}" != "true" ]; then
-    # create checkrun
     checkrun=$(curl \
     -X POST \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs \
     --fail \
-    -d "{\"name\":\"$name\",\"head_sha\":\"${GIT_SHA}\",\"status\":\"in_progress\",\"started_at\":\"$(date -u +"%Y-%m-%dT%H:%M:%S"Z)\",\"output\":{\"title\":\""$name"\",\"summary\":\"\",\"text\":\"\"}}")
+    -d "$checkrun_create")
     checkrun_id=$(echo $checkrun | jq .id)
+else 
+    >&2 echo "DRY_RUN=$DRY_RUN - skipping checkrun creation"
+fi
 
-    # update checkrun
-    checkrun_update="{\"name\":\"$name\",\"status\":\"completed\",\"conclusion\":\"$conclusion\",\"completed_at\":\"$(date -u +"%Y-%m-%dT%H:%M:%S"Z)\",\"output\":{\"title\":\"$name\",\"summary\":\"$summary\",\"text\":$text}}"
-    # >&2 echo $checkrun_update
+# update checkrun
+checkrun_update="{\"name\":\"$name\",\"status\":\"completed\",\"conclusion\":\"$conclusion\",\"completed_at\":\"$(date -u +"%Y-%m-%dT%H:%M:%S"Z)\",\"output\":{\"title\":\"$name\",\"summary\":\"$summary\",\"text\":$text}}"
+>&2 echo "$checkrun_update" | jq
+if [ "${DRY_RUN,,}" != "true" ]; then
     curl \
     -X PATCH \
     -H "Accept: application/vnd.github+json" \
@@ -58,5 +63,5 @@ if [ "${DRY_RUN,,}" != "true" ]; then
     --fail \
     -d "$checkrun_update"
 else 
-    >&2 echo "DRY_RUN=$DRY_RUN - skipping checkrun creation"
+    >&2 echo "DRY_RUN=$DRY_RUN - skipping checkrun update"
 fi
