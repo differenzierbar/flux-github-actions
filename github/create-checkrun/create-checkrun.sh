@@ -52,7 +52,7 @@ else
 fi
 
 # update checkrun
-checkrun_update="{\"name\":\"$name\",\"status\":\"completed\",\"conclusion\":\"$conclusion\",\"completed_at\":\"$(date -u +"%Y-%m-%dT%H:%M:%S"Z)\",\"output\":{\"title\":\"$name\",\"summary\":\"$summary\",\"text\":$text}}"
+checkrun_update="{\"name\":\"$name\",\"status\":\"completed\",\"conclusion\":\"$conclusion\",\"completed_at\":\"$(date -u +"%Y-%m-%dT%H:%M:%S"Z)\",\"output\":{\"title\":\"$name\",\"summary\":$summary,\"text\":$text}}"
 >&2 echo "$checkrun_update" | jq
 if [ "${DRY_RUN,,}" != "true" ]; then
     curl \
