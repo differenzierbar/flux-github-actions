@@ -9,6 +9,7 @@ shift 3
 >&2 echo "GIT_SHA: $GIT_SHA"
 >&2 echo "name: $name"
 >&2 echo "command: $@"
+>&2 echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
 
 # shellscript magic to save stdout & stderr to variables following https://stackoverflow.com/a/18086548
 unset t_std t_err t_ret
