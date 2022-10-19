@@ -17,21 +17,21 @@ jobs:
         shell: bash
         run: |
           set -x
-          conftest/conftest-test/tests/tests.sh
-          flux/find-kustomizations/tests/tests.sh
-          flux/get-kustomization-path/tests/tests.sh
-          generic/filter-filenames/tests/tests.sh
-          generic/filter-lists/tests/tests.sh
-          generic/find-files/tests/tests.sh
-          generic/find-in-ancestor-folders/tests/tests.sh
-          kustomize/get-kustomization-resources/tests/tests.sh
-          kustomize/get-kustomization-tree/tests/tests.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} conftest/conftest-test conftest/conftest-test/tests/tests.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} flux/find-kustomizations flux/find-kustomizations/tests/tests.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} flux/get-kustomization-path flux/get-kustomization-path/tests/tests.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} generic/filter-filenames generic/filter-filenames/tests/tests.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} generic/filter-lists generic/filter-lists/tests/tests.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} generic/find-files generic/find-files/tests/tests.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} generic/find-in-ancestor-folders generic/find-in-ancestor-folders/tests/tests.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} kustomize/get-kustomization-resources kustomize/get-kustomization-resources/tests/tests.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} kustomize/get-kustomization-tree kustomize/get-kustomization-tree/tests/tests.sh
 
       - name: integation tests
         id: integration-tests
         shell: bash
         run: |
-          integration-tests/integration-test.sh
+          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ env.GIT_SHA}} integration-tests integration-tests/integration-test.sh
       # - name: install
       #   run: |
       #     sudo apt-get install jq jo
