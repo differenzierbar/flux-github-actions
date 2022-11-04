@@ -23,32 +23,32 @@ while IFS= read -r kustomization; do
     IFS="$separator" read -r -a kustomization_changed <<< $($here/../generic/filter-lists/filter-lists.sh "$git_changes" "$filename")
     echo "kustomization_changed: ${#kustomization_changed[@]}"
 
-    kustomization_paths=()
-    IFS="$separator" read -r -a kustomization_paths <<< $($here/../flux/get-kustomization-path/get-kustomization-path.sh $filename ".$query")
-    echo "kustomization_paths: ${kustomization_paths[@]}"
+    IFS="$separator" read -r -a kustomization_resources <<< $($here/../flux/get-all-kustomization-resources/get-all-kustomization-resources.sh $kustomization)
 
-    kustomization_tree=()
+    # echo "(dirname $here/kustomizations/$kustomization_yaml): $(dirname $kustomization_yaml)"
+    IFS="$separator" read -r -a policy_folders <<< $($here/../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $here $(dirname kustomizations/$kustomization_yaml) "policy")
+    echo "policy_folders: ${policy_folders[@]}"
 
-    IFS="$separator" read -r -a kustomization_tree <<< $($here/../kustomize/get-kustomization-tree/get-kustomization-tree.sh $here/kustomizations ${kustomization_paths[0]})
-    echo "kustomization_tree: ${kustomization_tree[@]}"
 
-    while IFS= read -r kustomization_yaml; do
-        IFS="$separator" read -r -a kustomization_resources <<< $($here/../kustomize/get-kustomization-resources/get-kustomization-resources.sh $here/kustomizations/$kustomization_yaml $here/../)
-        echo "kustomization_resources: ${kustomization_resources[@]}"
-
+    if [[ "${kustomization_changed}" ]]; then
+        resources_to_check="$kustomization_resources"
+    else
         IFS="$separator" read -r -a filtered_resources <<< $($here/../generic/filter-lists/filter-lists.sh "$git_changes" "${kustomization_resources[@]}")
-        echo "filtered_resources: ${filtered_resources[@]}"
+        resources_to_check="$filtered_resources"
+    fi
 
-        echo "(dirname $here/kustomizations/$kustomization_yaml): $(dirname $kustomization_yaml)"
-        IFS="$separator" read -r -a policy_folders <<< $($here/../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $here $(dirname kustomizations/$kustomization_yaml) "policy")
-        echo "policy_folders: ${policy_folders[@]}"
 
-        while IFS= read -r resource; do
-            echo "calling conftest for resource $resource"
-            echo "prefixed policy folders: ${policy_folders[@]/#/$here/}"
-            result=$($here/../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$here/}")
-            echo $result
-        done < <(tr ' ' '\n' <<< "${kustomization_resources[@]}")
+        # IFS="$separator" read -r -a filtered_resources <<< $($here/../generic/filter-lists/filter-lists.sh "$git_changes" "${kustomization_resources[@]}")
+        # echo "filtered_resources: ${filtered_resources[@]}"
+
+
+    while IFS= read -r resource; do
+        echo "resource: $resource"
+        # echo "calling conftest for resource $resource"
+        # echo "prefixed policy folders: ${policy_folders[@]/#/$here/}"
+        # result=$($here/../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$here/}")
+        # echo $result
+    done < <(tr ' ' '\n' <<< "${resources_to_check[@]}")
 
 
         
@@ -63,6 +63,5 @@ while IFS= read -r kustomization; do
         #     echo "conftest result: $conftest_result"
         # done < <(tr ' ' '\n' <<< "${kustomization_resources}")    
 
-    done < <(tr ' ' '\n' <<< "${kustomization_tree[@]}")
 
 done < <(tr ' ' '\n' <<< "${kustomizations[@]}")
