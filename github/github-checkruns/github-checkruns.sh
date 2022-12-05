@@ -49,7 +49,7 @@ separator=' '
 kustomizations=$($here/../../flux/find-kustomizations/find-kustomizations.sh $KUSTOMIZATION_ROOT ".spec.sourceRef.name==\"flux-system\"")
 # echo $kustomizations
 
-git_changes=$($here/../../git/git-changes/git-changes.sh $GIT_SHA)
+git_changes=$($here/../../git/git-changes/git-changes.sh $GIT_SHA $KUSTOMIZATION_ROOT)
 echo "git_changes: $git_changes"
 
 while IFS= read -r kustomization; do
