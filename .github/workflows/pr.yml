@@ -43,4 +43,4 @@ jobs:
         id: flux-github-actions-test
         shell: bash
         run: |
-          flux-github-actions/github/github-checkruns/github-checkruns.sh ${{ secrets.GITHUB_TOKEN }} 0ec447462b9b53f12ff7edd68345ed6f3d593aa0 flux-github-actions-test
+          github/github-checkruns/github-checkruns.sh ${{ secrets.GITHUB_TOKEN }} 0ec447462b9b53f12ff7edd68345ed6f3d593aa0 flux-github-actions-test
