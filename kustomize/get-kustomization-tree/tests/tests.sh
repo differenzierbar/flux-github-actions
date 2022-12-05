@@ -6,7 +6,7 @@ here=`dirname $(realpath $0)`
 
 export SEPARATOR=' '
 
-result=$($here/../get-kustomization-tree.sh $here testdata/with-child)
+result=$($here/../get-kustomization-tree.sh $here $here/testdata/with-child)
 assert "testdata/with-child/child/kustomization.yaml testdata/with-child/kustomization.yaml" "$result"
 
 

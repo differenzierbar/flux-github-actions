@@ -15,21 +15,21 @@ kustomization_root="${2:-$(dirname $kustomization)}"
 parts=(${kustomization//\?/ })
 filename=${parts[0]}
 query=${parts[1]}
->&2 echo $filename
->&2 echo $query
+>&2 echo "filename: $filename"
+>&2 echo "query: $query"
 
 IFS="$separator" read -r -a kustomization_paths <<< $($here/../get-kustomization-path/get-kustomization-path.sh $filename ".$query")
 >&2 echo "kustomization_paths: ${kustomization_paths[@]}"
 
-IFS="$separator" read -r -a kustomization_tree <<< $($here/../../kustomize/get-kustomization-tree/get-kustomization-tree.sh $kustomization_root ${kustomization_paths[0]})
->&2 echo "kustomization_tree: ${kustomization_tree[@]}"
+IFS="$separator" read -r -a kustomization_tree <<< $($here/../../kustomize/get-kustomization-tree/get-kustomization-tree.sh $kustomization_root "${kustomization_paths[0]}")
+>&2 echo "kustomization_tree: ${kustomization_tree[*]}"
 
 result=()
 
 while IFS= read -r kustomization_yaml; do
     >&2 echo "getting kustomization_resources from $kustomization_yaml"
     IFS="$separator" read -r -a kustomization_resources <<< $($here/../../kustomize/get-kustomization-resources/get-kustomization-resources.sh $kustomization_root/$kustomization_yaml $kustomization_root)
-    >&2 echo "kustomization_resources: '${kustomization_resources[@]}'"
+    >&2 echo "kustomization_resources: '${kustomization_resources[*]}'"
     # result+="${kustomization_resources[@]}"
 
     result=("${result[@]}" "${kustomization_resources[@]}")
