@@ -20,7 +20,6 @@ jobs:
           github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} conftest/conftest-test conftest/conftest-test/tests/tests.sh
           github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} flux/find-kustomizations flux/find-kustomizations/tests/tests.sh
           github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} flux/get-kustomization-path flux/get-kustomization-path/tests/tests.sh
-          github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/filter-filenames generic/filter-filenames/tests/tests.sh
           github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/filter-lists generic/filter-lists/tests/tests.sh
           github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/find-files generic/find-files/tests/tests.sh
           github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/find-in-ancestor-folders generic/find-in-ancestor-folders/tests/tests.sh

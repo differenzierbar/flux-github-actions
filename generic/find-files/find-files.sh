@@ -6,7 +6,7 @@ directory=$1
 pattern=$2
 recursive=$3
 
- separator=' '
+separator=' '
 
 >&2 echo "directory: $directory"
 >&2 echo "pattern: $pattern"
