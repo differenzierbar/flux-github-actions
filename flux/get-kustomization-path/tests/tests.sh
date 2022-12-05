@@ -11,4 +11,4 @@ kustomization=$(realpath $here/testdata/testdata.yml --relative-to .)
 echo "kustomization: $kustomization"
 
 result=$($here/../get-kustomization-path.sh $here/testdata/testdata.yml "$query" "$separator")
-assert "$here/testdata/./kustomizations/one" "$result"
+assert "./kustomizations/one" "$result"

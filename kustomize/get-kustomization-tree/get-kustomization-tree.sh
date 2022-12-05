@@ -21,23 +21,23 @@ kustomization_yaml()
     # >&2 echo "(child) kustomization_directory: $kustomization_directory"
 
     # >&2 echo "looking for kustomization.yaml in $kustomization_root/$kustomization_directory"
-    kustomization_yml_find_result=($(find $kustomization_directory -maxdepth 1 -type f -regextype posix-extended -regex "$kustomization_yml_find_pattern"))
+    kustomization_yml_find_result=($(find $kustomization_root/$kustomization_directory -maxdepth 1 -type f -regextype posix-extended -regex "$kustomization_yml_find_pattern"))
 
     if [ ${#kustomization_yml_find_result[@]} -gt 1 ]; then
-        >&2 echo "Error: Found multiple kustomization files under: $kustomization_directory"
+        >&2 echo "Error: Found multiple kustomization files under: $kustomization_root/$kustomization_directory"
         exit 1
     elif [[ ${#kustomization_yml_find_result[@]} -eq 1 ]]; then
         result=()
         while IFS= read -r resource; do
             # >&2 echo "checking: $kustomization_root/$kustomization_directory/$resource"
-            if [[ -d "$kustomization_directory/$resource" ]]; then
+            if [[ -d "$kustomization_root/$kustomization_directory/$resource" ]]; then
                 # directory
                 child_result=$(kustomization_yaml $kustomization_root "$kustomization_directory/$resource")
                 # >&2 echo "child_result: $child_result"
                 result+=($child_result)
             fi
-        done <<<$(yq e -o=j -I=0 '.resources[]' "$kustomization_directory/kustomization.yaml" | tr -d \")
-        kustomization_yaml_path="$(realpath --relative-to $kustomization_root $kustomization_directory/kustomization.yaml)"
+        done <<<$(yq e -o=j -I=0 '.resources[]' "$kustomization_root/$kustomization_directory/kustomization.yaml" | tr -d \")
+        kustomization_yaml_path="$(realpath --relative-to $kustomization_root $kustomization_root/$kustomization_directory/kustomization.yaml)"
         # >&2 echo "kustomization.yaml changed: $kustomization_yaml_path"
         result+=($kustomization_yaml_path)
         echo ${result[@]}
@@ -50,7 +50,7 @@ kustomization_yaml()
 result=()
 
 # >&2 echo "looking for kustomization.yaml in $kustomization_root/$kustomization_directory"
-kustomization_yml_find_result=($(find $kustomization_directory -maxdepth 1 -type f -regextype posix-extended -regex "$kustomization_yml_find_pattern"))
+kustomization_yml_find_result=($(find $kustomization_root/$kustomization_directory -maxdepth 1 -type f -regextype posix-extended -regex "$kustomization_yml_find_pattern"))
 
 if [ ${#kustomization_yml_find_result[@]} -gt 1 ]; then
     >&2 echo "Error: Found multiple kustomization files under: $kustomization_root"

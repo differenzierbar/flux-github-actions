@@ -3,6 +3,6 @@ kind: Kustomization
 metadata:
   name: valid-two
 spec:
-  path: ./valid/with-child
+  path: integration-tests/kustomizations/valid/with-child
   sourceRef:
     name: flux-system

@@ -8,7 +8,9 @@ separator=' '
 # result=$($here/../find-kustomizations.sh $here/testdata "$query" "$separator")
 # result_array=()
 
-kustomizations=$($here/../flux/find-kustomizations/find-kustomizations.sh $here/kustomizations ".spec.sourceRef.name==\"flux-system\"")
+kustomization_root=$here/..
+
+kustomizations=$($here/../flux/find-kustomizations/find-kustomizations.sh "$here/kustomizations" ".spec.sourceRef.name==\"flux-system\"")
 # echo $kustomizations
 
 git_changes=$($here/../git/git-changes/git-changes.sh HEAD)
@@ -25,16 +27,15 @@ while IFS= read -r kustomization; do
     IFS="$separator" read -r -a kustomization_changed <<< $($here/../generic/filter-lists/filter-lists.sh "$git_changes" "$filename")
     echo "kustomization_changed: ${#kustomization_changed[@]}"
 
-    relative_folder=$(dirname $(realpath $filename --relative-to $here/../))
+    relative_folder=$(dirname $(realpath $filename --relative-to $kustomization_root))
 
-    IFS="$separator" read -r -a kustomization_resources <<< $($here/../flux/get-all-kustomization-resources/get-all-kustomization-resources.sh $kustomization "$here/..")
+    IFS="$separator" read -r -a kustomization_resources <<< $($here/../flux/get-all-kustomization-resources/get-all-kustomization-resources.sh $kustomization "$kustomization_root")
     echo "all kustomization_resources: ${kustomization_resources[@]}"
 
     # echo "(dirname $here/kustomizations/$kustomization_yaml): $(dirname $kustomization_yaml)"
     echo "looking for policy_folders in $relative_folder"
-    IFS="$separator" read -r -a policy_folders <<< $($here/../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $here/../ $relative_folder "policy")
+    IFS="$separator" read -r -a policy_folders <<< $($here/../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $kustomization_root $relative_folder "policy")
     echo "policy_folders: ${policy_folders[@]}"
-    # result=$($here/../find-files.sh $here/testdata ".*.ya?ml$" "true")
 
     if [[ "${kustomization_changed}" ]]; then
         resources_to_check="$kustomization_resources"
