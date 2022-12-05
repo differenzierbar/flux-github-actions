@@ -10,6 +10,3 @@ export LC_ALL=C
 
 result=$($here/../filter-lists.sh "matching/valid matching/invalid.yml matching/valid.txt" "matching/invalid.yml matching/valid notmatching/valid.yml matching/valid.txt")
 assert "matching/invalid.yml matching/valid matching/valid.txt" "$result"
-
-result=$($here/../filter-lists.sh "matching/valid matching/invalid.yml matching/valid.txt" "matching notmatching/valid.yml")
-assert "matching/invalid.yml matching/valid matching/valid.txt" "$result"
