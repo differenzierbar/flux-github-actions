@@ -11,7 +11,7 @@ separator=' '
 kustomizations=$($here/../flux/find-kustomizations/find-kustomizations.sh $here/kustomizations ".spec.sourceRef.name==\"flux-system\"")
 # echo $kustomizations
 
-git_changes=$($here/../git/git-changes/git-changes.sh refactoring)
+git_changes=$($here/../git/git-changes/git-changes.sh HEAD)
 echo "git_changes: $git_changes"
 
 while IFS= read -r kustomization; do
@@ -59,19 +59,33 @@ while IFS= read -r kustomization; do
     echo "resources_to_check: ${resources_to_check[@]}"
     while IFS= read -r resource; do
         echo "resource: $resource"
-
-        echo "calling kubeconform for resource $resource"
-        result=$($here/../kubeval/kubeconform/kubeconform.sh "$resource")
-        echo $result
+        if [[ -n "$resource" ]]; then
+            echo "calling kubeconform for resource $resource"
+            result=$($here/../kubeval/kubeconform/kubeconform.sh "$resource")
+            echo $result
+        fi
     done < <(tr "$separator" '\n' <<< "${resources_to_check[@]}")
+
+    echo "resources_to_policy_check: '${resources_to_policy_check[@]}'"
+    # for resource in "${resources_to_policy_check[@]}"; do
+    #     # echo "processing entry $entry..."
+    #     echo "resource: $resource"
+
+    #     echo "calling conftest for resource $resource"
+    #     # echo "prefixed policy folders: ${policy_folders[@]/#/$here/}"
+    #     result=$($here/../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]}")
+    #     echo $result
+    # done
+
 
     while IFS= read -r resource; do
         echo "resource: $resource"
-
-        echo "calling conftest for resource $resource"
-        # echo "prefixed policy folders: ${policy_folders[@]/#/$here/}"
-        result=$($here/../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]}")
-        echo $result
+        if [[ -n "$resource" ]]; then
+            echo "calling conftest for resource $resource"
+            # echo "prefixed policy folders: ${policy_folders[@]/#/$here/}"
+            result=$($here/../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]}")
+            echo $result
+        fi
     done < <(tr "$separator" '\n' <<< "${resources_to_policy_check[@]}")
         
 done < <(tr ' ' '\n' <<< "${kustomizations[@]}")
