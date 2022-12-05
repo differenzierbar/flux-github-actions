@@ -46,13 +46,10 @@ here=`dirname $(realpath $0 --relative-to .)`
 
 separator=' '
 
-# result=$($here/../find-kustomizations.sh $here/testdata "$query" "$separator")
-# result_array=()
-
-kustomizations=$($here/../flux/find-kustomizations/find-kustomizations.sh $KUSTOMIZATION_ROOT ".spec.sourceRef.name==\"flux-system\"")
+kustomizations=$($here/../../flux/find-kustomizations/find-kustomizations.sh $KUSTOMIZATION_ROOT ".spec.sourceRef.name==\"flux-system\"")
 # echo $kustomizations
 
-git_changes=$($here/../git/git-changes/git-changes.sh $GIT_SHA)
+git_changes=$($here/../../git/git-changes/git-changes.sh $GIT_SHA)
 echo "git_changes: $git_changes"
 
 while IFS= read -r kustomization; do
