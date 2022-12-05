@@ -8,6 +8,7 @@ kustomization_file=$1
 result=$(yq -N eval '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2" '"$query"') | .spec.path' "$kustomization_file")
 
 kustomization_root=$(dirname $kustomization_file)
+ >&2 echo "kustomization_root: $kustomization_root"
 # >&2 echo "---------------------kustomization-path: ${result[@]/#/$kustomization_root/}"
 echo "${result[@]/#/$kustomization_root/}"
 
