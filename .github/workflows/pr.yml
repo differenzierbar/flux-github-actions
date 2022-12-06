@@ -39,6 +39,8 @@ jobs:
           fetch-depth: 0
           repository: 'differenzierbar/flux-github-actions-test'
           ref: main
+      - name: install-kubeconform
+        uses: ./kubeval/install-kubeconform
       - name: flux-github-actions-test
         id: flux-github-actions-test
         shell: bash
