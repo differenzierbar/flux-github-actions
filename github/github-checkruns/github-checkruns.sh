@@ -109,6 +109,7 @@ while IFS= read -r kustomization; do
             echo "calling conftest for resource $resource"
             result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}")
             echo $result
+            echo
         fi
     done < <(tr "$separator" '\n' <<< "${resources_to_policy_check[@]}")
         
