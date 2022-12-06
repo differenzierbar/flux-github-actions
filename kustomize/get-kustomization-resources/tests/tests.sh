@@ -5,5 +5,5 @@ here=`dirname $(realpath $0 --relative-to .)`
 
 export SEPARATOR=' '
 
-result=$($here/../get-kustomization-resources.sh $here/testdata/with-child/kustomization.yaml $here/testdata)
+result=$($here/../get-kustomization-resources.sh $here/testdata/with-child $here/testdata)
 assert "with-child/configmap.yml with-child/deployment.yaml" "$result"
