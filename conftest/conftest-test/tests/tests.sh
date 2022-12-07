@@ -22,3 +22,4 @@ $here/../conftest.sh $here/testdata/conftest/invalid/invalid-local-policy/config
 # fi
 
 # assert "invalid/invalid-local-policy/policy invalid/policy policy" "$result"
+exit 0
