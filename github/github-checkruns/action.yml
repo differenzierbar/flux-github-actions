@@ -17,5 +17,4 @@ runs:
       id: find_kustomization_changes
       shell: bash
       run: |
-        echo "PWD: $PWD"
         github-checkruns.sh ${{ inputs.github-token }} ${{ inputs.git-ref }} ${{ inputs.kustomizations-root }}
