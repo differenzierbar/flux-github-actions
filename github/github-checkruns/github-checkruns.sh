@@ -27,10 +27,12 @@ while IFS= read -r kustomization; do
     echo $filename
     echo $query
 
-    IFS="$separator" read -r -a kustomization_changed <<< $($here/../../generic/filter-lists/filter-lists.sh "$git_changes" "$filename")
+    relative_file=$(realpath $filename --relative-to $KUSTOMIZATION_ROOT)
+
+    IFS="$separator" read -r -a kustomization_changed <<< $($here/../../generic/filter-lists/filter-lists.sh "$git_changes" "$relative_file")
     echo "kustomization_changed: ${#kustomization_changed[@]}"
 
-    relative_folder=$(dirname $(realpath $filename --relative-to $KUSTOMIZATION_ROOT))
+    relative_folder=$(dirname $relative_file)
 
     IFS="$separator" read -r -a kustomization_resources <<< $($here/../../flux/get-all-kustomization-resources/get-all-kustomization-resources.sh $kustomization "$KUSTOMIZATION_ROOT")
     echo "all kustomization_resources: ${kustomization_resources[@]}"
