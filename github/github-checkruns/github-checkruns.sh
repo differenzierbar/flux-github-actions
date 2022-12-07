@@ -66,7 +66,7 @@ while IFS= read -r kustomization; do
             # echo $result
             set +e
             $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "kubeconform '$resource'" $here/../../kubeval/kubeconform/kubeconform.sh "$resource"
-            return_value|=$?
+            ((return_value|=$?))
             set -e
         fi
     done < <(tr "$separator" '\n' <<< "${resources_to_check[@]}")
@@ -85,7 +85,7 @@ while IFS= read -r kustomization; do
 
             set +e
             $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "conftest test '$resource'" $here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}"
-            return_value|=$?
+            ((return_value|=$?))
             set -e
         fi
     done < <(tr "$separator" '\n' <<< "${resources_to_policy_check[@]}")
