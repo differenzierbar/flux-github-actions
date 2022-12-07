@@ -37,8 +37,10 @@ while IFS= read -r kustomization; do
     IFS="$separator" read -r -a kustomization_resources <<< $($here/../../flux/get-all-kustomization-resources/get-all-kustomization-resources.sh $kustomization "$KUSTOMIZATION_ROOT")
     echo "all kustomization_resources: ${kustomization_resources[@]}"
 
-    echo "looking for policy_folders in $relative_folder"
-    IFS="$separator" read -r -a policy_folders <<< $($here/../../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $KUSTOMIZATION_ROOT $relative_folder "policy")
+    IFS="$separator" read -r -a kustomization_paths <<< $($here/../get-kustomization-path/get-kustomization-path.sh $filename ".$query")
+
+    echo "looking for policy_folders in ${kustomization_paths[0]}"
+    IFS="$separator" read -r -a policy_folders <<< $($here/../../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $KUSTOMIZATION_ROOT ${kustomization_paths[0]} "policy")
     echo "policy_folders: ${policy_folders[@]}"
 
     if [[ "${kustomization_changed}" ]]; then
