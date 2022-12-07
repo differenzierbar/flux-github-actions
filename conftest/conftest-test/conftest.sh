@@ -6,11 +6,11 @@ DEFAULT_SEPARATOR=' '
 separator="${SEPARATOR:-$DEFAULT_SEPARATOR}"
 
 input_file="$1"
-# policy_folders="$2"
-IFS=$separator read -r -a policy_folders <<< "$(echo $2)"
+shift
+IFS=$separator read -r -a policy_folders <<< "$(echo $@)"
 
 >&2 echo "input_file: $input_file"
->&2 echo "policy_folders: $policy_folders"
+>&2 echo "policy_folders: ${policy_folders[@]}"
 >&2 echo "separator: '$separator'"
 
 # execute conftest
