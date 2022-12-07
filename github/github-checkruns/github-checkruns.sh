@@ -89,4 +89,4 @@ while IFS= read -r kustomization; do
         
 done < <(tr ' ' '\n' <<< "${kustomizations[@]}")
 
-return return_value
+exit $return_value
