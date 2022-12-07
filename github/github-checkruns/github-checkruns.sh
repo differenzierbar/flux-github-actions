@@ -38,22 +38,22 @@ while IFS= read -r kustomization; do
     echo "all kustomization_resources: ${kustomization_resources[@]}"
 
     if [[ "${kustomization_changed}" ]]; then
-        resources_to_check="$kustomization_resources"
-        resources_to_policy_check="$kustomization_resources"
+        resources_to_check=${kustomization_resources[@]}
+        resources_to_policy_check=${kustomization_resources[@]}
     else
         # look for resource changes
         read -r -a filtered_resources <<< $($here/../../generic/filter-lists/filter-lists.sh "$git_changes" "${kustomization_resources[*]}")
         echo "filtered_resources: ${filtered_resources[@]}"
-        resources_to_check="$filtered_resources"
+        resources_to_check=${filtered_resources[@]}
 
         IFS="$separator" read -r -a changed_policy_folders <<< $($here/../../generic/filter-changed-directories/filter-changed-directories.sh "$policy_folders" "*" "$git_changes")
         echo "policy_folders_changed: ${#changed_policy_folders[@]}"
         if [[ ${#changed_policy_folders[@]} -gt 0 ]]; then
             # policies changed - policy-check all resources
-            resources_to_policy_check="$kustomization_resources"
+            resources_to_policy_check=${kustomization_resources[@]}
         else
             # policies not changed - policy-check only changed resources 
-            resources_to_policy_check="$filtered_resources"
+            resources_to_policy_check=${filtered_resources[@]}
         fi
     fi
 
