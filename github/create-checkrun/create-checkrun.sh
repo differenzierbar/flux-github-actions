@@ -3,13 +3,14 @@
 GITHUB_TOKEN=$1
 GIT_SHA=$2
 name=$3
-shift 3
+shift 4
 
 >&2 echo "GITHUB_TOKEN: $GITHUB_TOKEN"
 >&2 echo "GIT_SHA: $GIT_SHA"
 >&2 echo "name: $name"
 >&2 echo "command: $@"
 >&2 echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+
 
 # shellscript magic to save stdout & stderr to variables following https://stackoverflow.com/a/18086548
 unset t_std t_err t_ret
@@ -29,7 +30,7 @@ else
     summary=$(echo "'$@' error" | jq -Rsa .)
 
     # json escape output
-    text=$(echo "$t_err" | jq -Rsa .)
+    text=$(echo "$t_std" | jq -Rsa .)
 fi
 
 >&2 echo "conclusion: $conclusion"
