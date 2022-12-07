@@ -67,4 +67,4 @@ else
     >&2 echo "DRY_RUN=$DRY_RUN - skipping checkrun update"
 fi
 
-return $t_ret
+exit $t_ret
