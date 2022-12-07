@@ -26,7 +26,7 @@ if [ "$t_ret" -eq 0 ]; then
 else
     # echo "FAIL: $t_err"
     conclusion="failure"
-    summary=$(echo "'$@' error" | jq -Rsa .)
+    summary=$(echo "'$@' failed" | jq -Rsa .)
 
     # json escape output
     text=$(echo "$t_std" | jq -Rsa .)
