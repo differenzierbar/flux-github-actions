@@ -39,10 +39,6 @@ while IFS= read -r kustomization; do
 
     IFS="$separator" read -r -a kustomization_paths <<< $($here/../../flux/get-kustomization-path/get-kustomization-path.sh $filename ".$query")
 
-    echo "looking for policy_folders in ${kustomization_paths[0]}"
-    IFS="$separator" read -r -a policy_folders <<< $($here/../../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $KUSTOMIZATION_ROOT ${kustomization_paths[0]} "policy")
-    echo "policy_folders: ${policy_folders[@]}"
-
     if [[ "${kustomization_changed}" ]]; then
         resources_to_check="$kustomization_resources"
         resources_to_policy_check="$kustomization_resources"
@@ -84,6 +80,11 @@ while IFS= read -r kustomization; do
             # echo "calling conftest for resource $resource"
             # result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}")
             # echo $result
+            resource_directory=$(dirname $resource)
+            echo "looking for policy_folders in $resource_directory"
+            IFS="$separator" read -r -a policy_folders <<< $($here/../../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $KUSTOMIZATION_ROOT $resource_directory "policy")
+            echo "policy_folders: ${policy_folders[@]}"
+
             set +e
             $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "conftest test '$resource'" $here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}"
             return_value|=$?
