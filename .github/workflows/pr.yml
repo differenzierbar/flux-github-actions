@@ -17,6 +17,7 @@ jobs:
         shell: bash
         run: |
           set -x
+          set +e
           github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} conftest/conftest-test conftest/conftest-test/tests/tests.sh
           github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} flux/find-kustomizations flux/find-kustomizations/tests/tests.sh
           github/create-checkrun/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} flux/get-kustomization-path flux/get-kustomization-path/tests/tests.sh
