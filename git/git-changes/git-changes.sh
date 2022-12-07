@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 DEFAULT_SEPARATOR=' '
 
 ref=$1
