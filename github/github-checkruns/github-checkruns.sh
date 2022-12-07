@@ -96,9 +96,10 @@ while IFS= read -r kustomization; do
     while IFS= read -r resource; do
         echo "resource: $resource"
         if [[ -n "$resource" ]]; then
-            echo "calling kubeconform for resource $resource"
-            result=$($here/../../kubeval/kubeconform/kubeconform.sh "$resource")
-            echo $result
+            # echo "calling kubeconform for resource $resource"
+            # result=$($here/../../kubeval/kubeconform/kubeconform.sh "$resource")
+            # echo $result
+            $here/../github/create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "kubeconform $resource" $here/../../kubeval/kubeconform/kubeconform.sh "$resource"
         fi
     done < <(tr "$separator" '\n' <<< "${resources_to_check[@]}")
 
@@ -106,10 +107,10 @@ while IFS= read -r kustomization; do
     while IFS= read -r resource; do
         echo "resource: $resource"
         if [[ -n "$resource" ]]; then
-            echo "calling conftest for resource $resource"
-            result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}")
-            echo $result
-            echo
+            # echo "calling conftest for resource $resource"
+            # result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}")
+            # echo $result
+            $here/../github/create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "conftest test $resource" $here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}"
         fi
     done < <(tr "$separator" '\n' <<< "${resources_to_policy_check[@]}")
         
