@@ -5,21 +5,12 @@ here=`dirname $(realpath $0 --relative-to .)`
 
 export SEPARATOR=' '
 
-# result=$(
-$here/../conftest.sh $here/testdata/conftest/invalid/invalid-local-policy/configmap.yml "$here/testdata/conftest/invalid/invalid-local-policy/policy"
-    # )
+result=$($here/../conftest.sh $here/testdata/conftest/invalid/invalid-local-policy/configmap.yml "$here/testdata/conftest/invalid/invalid-local-policy/policy")
 
-# read -r -d '' expected <<'EOF'
-# FAIL - conftest/conftest-test/tests/testdata/conftest/invalid/invalid-local-policy/configmap.yml - main - missing testdata
+read -r -d '' expected <<'EOF'
+FAIL - conftest/conftest-test/tests/testdata/conftest/invalid/invalid-local-policy/configmap.yml - main - missing testdata
 
-# 1 test, 0 passed, 0 warnings, 1 failure, 0 exceptions
-# EOF
+1 test, 0 passed, 0 warnings, 1 failure, 0 exceptions
+EOF
 
-# if [[ "$result" != "$expected" ]]; then
-#     echo ": '$result'"
-#     echo ": '$expected'"
-#     exit 1
-# fi
-
-# assert "invalid/invalid-local-policy/policy invalid/policy policy" "$result"
-exit 0
+assert "$expected" "$result"

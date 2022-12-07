@@ -16,7 +16,7 @@ IFS=$separator read -r -a policy_folders <<< "$(echo $2)"
 # execute conftest
 # if [[ ${#policy_folders[@]} > 0 ]];then
 >&2 echo "executing 'conftest test $input_file ${policy_folders[@]/#/"-p "}'"
-conftest test $input_file ${policy_folders[@]/#/"-p "}
+conftest test $input_file ${policy_folders[@]/#/"-p "} --no-color
 # else
 #     >&2 echo "no policy folders found - skipping conftest for $input_file"
 # fi
