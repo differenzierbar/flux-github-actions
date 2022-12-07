@@ -17,4 +17,4 @@ runs:
       id: find_kustomization_changes
       shell: bash
       run: |
-        flux-github-actions/github/github-checkruns/github-checkruns.sh ${{ inputs.github-token }} ${{ inputs.git-ref }} ${{ inputs.kustomizations-root }}
+        github/github-checkruns/github-checkruns.sh ${{ inputs.github-token }} ${{ inputs.git-ref }} ${{ inputs.kustomizations-root }}
