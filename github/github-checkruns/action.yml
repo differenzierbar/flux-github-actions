@@ -1,16 +1,13 @@
-name: kustomize-changes
-description: find changes in flux kustomization trees 
+name: github-checkruns
+description: find changes in flux kustomization trees
 inputs:
-  changes:
-    description: 'changes to take into account'
+  github-token:
+    required: true
+  git-ref: 
     required: true
   kustomizations-root:
     description: 'root directory containing kustomizations'
     required: true
-outputs:
-  kustomization-changes:
-    description: "kustomization roots that contain changes"
-    value: ${{ steps.find_kustomization_changes.outputs.kustomization_changes }}
 runs:
   using: "composite"
   steps:
@@ -20,6 +17,4 @@ runs:
       id: find_kustomization_changes
       shell: bash
       run: |
-        kustomization_changes=$(get-kustomization-changes.sh ${{ inputs.changes }} ${{ inputs.kustomizations-root }})
-        echo "kustomization_changes: $kustomization_changes"
-        echo "::set-output name=kustomization_changes::$kustomization_changes"
+        flux-github-actions/github/github-checkruns/github-checkruns.sh ${{ inputs.github-token }} ${{ inputs.git-ref }} ${{ inputs.kustomizations-root }}
