@@ -37,8 +37,6 @@ while IFS= read -r kustomization; do
     IFS="$separator" read -r -a kustomization_resources <<< $($here/../../flux/get-all-kustomization-resources/get-all-kustomization-resources.sh $kustomization "$KUSTOMIZATION_ROOT")
     echo "all kustomization_resources: ${kustomization_resources[@]}"
 
-    IFS="$separator" read -r -a kustomization_paths <<< $($here/../../flux/get-kustomization-path/get-kustomization-path.sh $filename ".$query")
-
     if [[ "${kustomization_changed}" ]]; then
         resources_to_check="$kustomization_resources"
         resources_to_policy_check="$kustomization_resources"
