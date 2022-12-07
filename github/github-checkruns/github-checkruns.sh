@@ -84,7 +84,7 @@ while IFS= read -r kustomization; do
             echo "policy_folders: ${policy_folders[@]}"
 
             set +e
-            $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "conftest test '$resource'" $here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}"
+            $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "conftest test '$resource'" $here/../../conftest/conftest-test/conftest.sh "$resource" "\"${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}\""
             ((return_value|=$?))
             set -e
         fi
