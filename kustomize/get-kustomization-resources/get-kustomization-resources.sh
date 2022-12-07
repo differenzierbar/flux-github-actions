@@ -25,7 +25,7 @@ elif [[ ${#kustomization_yml_find_result[@]} -eq 1 ]]; then
     while IFS= read -r resource; do
         if [[ ! -d "$kustomization_yml_dir/$resource" ]]; then
             # result+=("$kustomization_root/$resource")
-            result+=("$kustomization_root/$(realpath --relative-to $kustomization_root "$kustomization_yml_dir/$resource")")
+            result+=("$(realpath --relative-to $kustomization_root "$kustomization_yml_dir/$resource")")
         fi
     done <<<$(yq e -o=j -I=0 '.resources[]' "${kustomization_yml_find_result}" | tr -d \")
 
