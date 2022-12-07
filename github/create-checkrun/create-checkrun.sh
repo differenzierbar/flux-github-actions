@@ -66,3 +66,5 @@ if [ "${DRY_RUN,,}" != "true" ]; then
 else 
     >&2 echo "DRY_RUN=$DRY_RUN - skipping checkrun update"
 fi
+
+return t_ret
