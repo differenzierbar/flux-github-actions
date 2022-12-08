@@ -70,7 +70,7 @@ while IFS= read -r kustomization; do
                     fi
                 fi
             fi
-        done < <(tr "$separator" '\n' <<< "${resources_to_check[@]}")
+        done < <(tr "$separator" '\n' <<< "${kustomization_resources[@]}")
 
     fi
 
