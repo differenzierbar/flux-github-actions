@@ -117,12 +117,16 @@ while IFS= read -r kustomization; do
         checkrun_text+="$check failed: ${check_failures[$check]}"
     done
 
-    if [[ check_status -ne 0 ]]; then
-        conclusion="failure"
-        summary="failed checks"
-        $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "'$relative_file'" $conclusion $summary $text
+    if [[ ${#resources_to_check[@]} -gt 0 ]] || [[ ${#resources_to_policy_check[@]} -gt 0 ]]; then
+        if [[ check_status -eq 0 ]]; then
+            conclusion="success"
+            summary="all checks successfull"
+        else
+            conclusion="failure"
+            summary="failed checks"
+            $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "'$relative_file'" $conclusion $summary $text
+        fi
     fi
-    
 
     end=`date +%s`
     runtime=$((end-start))
