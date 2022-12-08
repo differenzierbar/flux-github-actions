@@ -116,13 +116,7 @@ while IFS= read -r kustomization; do
     checkrun_text=""
     for check in "${!check_failures[@]}"
     do
-        read -r -d '' expected <<'EOF'
-$checkrun_text
-
-$check failed:
-${check_failures[$check]}
-EOF
-        # checkrun_text+="$check failed:\n\n${check_failures[$check]}\n\n"
+        checkrun_text+=$"$check failed:\n\n${check_failures[$check]}\n\n"
     done
 
     if [[ ${#resources_to_check[@]} -gt 0 ]] || [[ ${#resources_to_policy_check[@]} -gt 0 ]]; then
