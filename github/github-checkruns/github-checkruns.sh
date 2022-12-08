@@ -20,6 +20,9 @@ echo "git_changes: $git_changes"
 return_value=0
 
 while IFS= read -r kustomization; do
+
+    start=`date +%s`
+
     # echo "$kustomization"
     parts=(${kustomization//\?/ })
     filename=${parts[0]}
@@ -124,6 +127,9 @@ while IFS= read -r kustomization; do
     
     $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "'$filename'" $conclusion $summary $text
 
+    end=`date +%s`
+    runtime=$((end-start))
+    echo "duration for $kustomization: $runtime"
         
 done < <(tr ' ' '\n' <<< "${kustomizations[@]}")
 
