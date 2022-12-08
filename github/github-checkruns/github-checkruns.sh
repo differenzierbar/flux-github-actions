@@ -49,6 +49,7 @@ while IFS= read -r kustomization; do
         # look for resource changes
         while IFS= read -r resource; do
             if [[ -n "$resource" ]]; then
+                echo "checking if $resource has changed"
                 read -r -a filtered_resources <<< $($here/../../generic/filter-lists/filter-lists.sh "$git_changes" "$resource")
                 echo "filtered_resources: ${filtered_resources[@]}"
 
