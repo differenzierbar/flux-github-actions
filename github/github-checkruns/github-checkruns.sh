@@ -102,7 +102,7 @@ while IFS= read -r kustomization; do
             IFS="$separator" read -r -a policy_folders <<< $($here/../../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $KUSTOMIZATION_ROOT $resource_directory "policy")
             echo "policy_folders: ${policy_folders[@]}"
             set +e
-            conftest_result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}")
+            conftest_result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]}")
             conftest_return_code=$?
             set -e
             echo "conftest result: $conftest_result"
