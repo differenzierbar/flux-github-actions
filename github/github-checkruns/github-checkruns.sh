@@ -54,8 +54,8 @@ while IFS= read -r kustomization; do
                 echo "filtered_resources: ${filtered_resources[@]}"
 
                 if [[ ${#filtered_resources[@]} -gt 0 ]];then
-                    resources_to_check+=$resource
-                    resources_to_policy_check+=$resource
+                    resources_to_check+=($resource)
+                    resources_to_policy_check+=($resource)
                 else 
                     resource_directory=$(dirname $resource)
                     echo "looking for policy_folders in $resource_directory"
@@ -66,7 +66,7 @@ while IFS= read -r kustomization; do
                     echo "policy_folders_changed: ${#changed_policy_folders[@]}"
                     if [[ ${#changed_policy_folders[@]} -gt 0 ]]; then
                         # policies changed - policy-check all resources
-                        resources_to_policy_check+=$resource
+                        resources_to_policy_check+=($resource)
                     fi
                 fi
             fi
@@ -115,7 +115,7 @@ while IFS= read -r kustomization; do
     checkrun_text=""
     for check in "${!check_failures[@]}"
     do
-        checkrun_text+="$check failed: ${check_failures[$check]}"
+        checkrun_text+="$check failed: ${check_failures[$check]}\n\n"
     done
 
     if [[ ${#resources_to_check[@]} -gt 0 ]] || [[ ${#resources_to_policy_check[@]} -gt 0 ]]; then
