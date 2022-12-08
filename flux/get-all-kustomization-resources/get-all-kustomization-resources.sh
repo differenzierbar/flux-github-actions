@@ -27,17 +27,19 @@ IFS="$separator" read -r -a kustomization_tree <<< $($here/../../kustomize/get-k
 result=()
 
 while IFS= read -r kustomization_yaml; do
-    >&2 echo "getting kustomization_resources from $kustomization_yaml"
-    IFS="$separator" read -r -a kustomization_resources <<< $($here/../../kustomize/get-kustomization-resources/get-kustomization-resources.sh $kustomization_root/$kustomization_yaml $kustomization_root)
-    >&2 echo "kustomization_resources: '${kustomization_resources[*]}'"
-    # result+="${kustomization_resources[@]}"
+    if [[ -n "$kustomization_yaml" ]]; then
+        >&2 echo "getting kustomization_resources from $kustomization_yaml"
+        IFS="$separator" read -r -a kustomization_resources <<< $($here/../../kustomize/get-kustomization-resources/get-kustomization-resources.sh $kustomization_root/$kustomization_yaml $kustomization_root)
+        >&2 echo "kustomization_resources: '${kustomization_resources[*]}'"
+        # result+="${kustomization_resources[@]}"
 
-    result=("${result[@]}" "${kustomization_resources[@]}")
-    >&2 echo "result: ${result[@]}" 
+        result=("${result[@]}" "${kustomization_resources[@]}")
+        >&2 echo "result: ${result[@]}" 
 
-    while IFS= read -r resource; do
-        >&2 echo "resource ${resource}" 
-    done < <(tr "$separator" '\n' <<< "${kustomization_resources[@]}")
+        while IFS= read -r resource; do
+            >&2 echo "resource ${resource}" 
+        done < <(tr "$separator" '\n' <<< "${kustomization_resources[@]}")
+    fi
 
 done < <(tr "$separator" '\n' <<< "${kustomization_tree[@]}")
 
