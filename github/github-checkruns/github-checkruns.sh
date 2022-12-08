@@ -69,7 +69,7 @@ while IFS= read -r kustomization; do
             kubeconform_result=$($here/../../kubeval/kubeconform/kubeconform.sh "$resource")
             kubeconform_return_code=$?
             set -e
-            if [[ kubeconform_return_code -ne 0]]; then
+            if [[ kubeconform_return_code -ne 0 ]]; then
                 check_failures["kubeconform $resource"]=$kubeconform_result
                 check_status=1
             fi
@@ -88,7 +88,7 @@ while IFS= read -r kustomization; do
             conftest_result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}")
             conftest_return_code=$?
             set -e
-            if [[ conftest_return_code -ne 0]]; then
+            if [[ conftest_return_code -ne 0 ]]; then
                 check_failures["conftest $resource"]=$conftest_result
                 check_status=1
             fi
@@ -101,7 +101,7 @@ while IFS= read -r kustomization; do
         checkrun_text+="$check failed: ${check_failures[$check]}"
     done
 
-    if [[ check_status -eq 0]]; then
+    if [[ check_status -eq 0 ]]; then
         conclusion="success"
         summary="all checks successfull"
     else
