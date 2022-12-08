@@ -72,6 +72,9 @@ while IFS= read -r kustomization; do
     done < <(tr "$separator" '\n' <<< "${resources_to_check[@]}")
 
     echo "resources_to_policy_check: '${resources_to_policy_check[@]}'"
+    declare -A conftest_failures=()
+    
+    conftest_status=0
     while IFS= read -r resource; do
         echo "resource: $resource"
         if [[ -n "$resource" ]]; then
@@ -82,13 +85,37 @@ while IFS= read -r kustomization; do
             echo "looking for policy_folders in $resource_directory"
             IFS="$separator" read -r -a policy_folders <<< $($here/../../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $KUSTOMIZATION_ROOT $resource_directory "policy")
             echo "policy_folders: ${policy_folders[@]}"
-
             set +e
-            $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "conftest test '$resource'" $here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}"
-            ((return_value|=$?))
+            conftest_result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}")
+            conftest_return_code=$?
             set -e
+            if [[ conftest_return_code -ne 0]]; then
+                conftest_failures[$resource]=$conftest_result
+            fi
+
+            ((conftest_status|=$conftest_return_code))
         fi
     done < <(tr "$separator" '\n' <<< "${resources_to_policy_check[@]}")
+
+    # >&2 echo "conclusion: $conclusion"
+    # >&2 echo "summary: $summary"
+    # >&2 echo "text: $text"
+    conftest_checkrun_text=""
+    for resource in "${!conftest_failures[@]}"
+    do
+        conftest_checkrun_text+="conftest test $resource failed: ${conftest_failures[$resource]}"
+    done
+
+    if [[ conftest_status -eq 0]]; then
+        conclusion="success"
+        summary="all conftest checks successfull"
+    else
+        conclusion="failure"
+        summary="conftest checks failed"
+    fi
+    
+    $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "conftest test '$kustomization'" $conclusion $summary $text
+
         
 done < <(tr ' ' '\n' <<< "${kustomizations[@]}")
 
