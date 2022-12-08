@@ -122,7 +122,7 @@ while IFS= read -r kustomization; do
         summary="failed checks"
     fi
     
-    $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_SHA "'$filename'" $conclusion $summary $text
+    $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "'$filename'" $conclusion $summary $text
 
         
 done < <(tr ' ' '\n' <<< "${kustomizations[@]}")
