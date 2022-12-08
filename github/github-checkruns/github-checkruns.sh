@@ -105,6 +105,7 @@ while IFS= read -r kustomization; do
             conftest_result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}")
             conftest_return_code=$?
             set -e
+            echo "conftest result: $conftest_result"
             if [[ conftest_return_code -ne 0 ]]; then
                 check_failures["conftest $resource"]=$conftest_result
                 check_status=1
