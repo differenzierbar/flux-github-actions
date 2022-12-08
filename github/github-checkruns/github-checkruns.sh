@@ -126,7 +126,7 @@ while IFS= read -r kustomization; do
         else
             conclusion="failure"
             summary="failed checks"
-            $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "'$relative_file'" $conclusion $summary "$checkrun_text"
+            $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "'$relative_file'" $conclusion "$summary" "$checkrun_text"
         fi
     fi
 
