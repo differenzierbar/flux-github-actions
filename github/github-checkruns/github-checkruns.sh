@@ -57,30 +57,29 @@ while IFS= read -r kustomization; do
         fi
     fi
 
+
+    declare -A check_failures=()
+    check_status=0
+
     echo "resources_to_check: ${resources_to_check[@]}"
     while IFS= read -r resource; do
         echo "resource: $resource"
         if [[ -n "$resource" ]]; then
-            # echo "calling kubeconform for resource $resource"
-            # result=$($here/../../kubeval/kubeconform/kubeconform.sh "$resource")
-            # echo $result
             set +e
-            $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "kubeconform '$resource'" $here/../../kubeval/kubeconform/kubeconform.sh "$resource"
-            ((return_value|=$?))
+            kubeconform_result=$($here/../../kubeval/kubeconform/kubeconform.sh "$resource")
+            kubeconform_return_code=$?
             set -e
+            if [[ kubeconform_return_code -ne 0]]; then
+                check_failures["kubeconform $resource"]=$kubeconform_result
+                check_status=1
+            fi
         fi
     done < <(tr "$separator" '\n' <<< "${resources_to_check[@]}")
 
     echo "resources_to_policy_check: '${resources_to_policy_check[@]}'"
-    declare -A conftest_failures=()
-    
-    conftest_status=0
     while IFS= read -r resource; do
         echo "resource: $resource"
         if [[ -n "$resource" ]]; then
-            # echo "calling conftest for resource $resource"
-            # result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]/#/$KUSTOMIZATION_ROOT/}")
-            # echo $result
             resource_directory=$(dirname $resource)
             echo "looking for policy_folders in $resource_directory"
             IFS="$separator" read -r -a policy_folders <<< $($here/../../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $KUSTOMIZATION_ROOT $resource_directory "policy")
@@ -90,28 +89,24 @@ while IFS= read -r kustomization; do
             conftest_return_code=$?
             set -e
             if [[ conftest_return_code -ne 0]]; then
-                conftest_failures[$resource]=$conftest_result
+                check_failures["conftest $resource"]=$conftest_result
+                check_status=1
             fi
-
-            ((conftest_status|=$conftest_return_code))
         fi
     done < <(tr "$separator" '\n' <<< "${resources_to_policy_check[@]}")
 
-    # >&2 echo "conclusion: $conclusion"
-    # >&2 echo "summary: $summary"
-    # >&2 echo "text: $text"
-    conftest_checkrun_text=""
-    for resource in "${!conftest_failures[@]}"
+    checkrun_text=""
+    for check in "${!check_failures[@]}"
     do
-        conftest_checkrun_text+="conftest test $resource failed: ${conftest_failures[$resource]}"
+        checkrun_text+="$check failed: ${check_failures[$check]}"
     done
 
-    if [[ conftest_status -eq 0]]; then
+    if [[ check_status -eq 0]]; then
         conclusion="success"
-        summary="all conftest checks successfull"
+        summary="all checks successfull"
     else
         conclusion="failure"
-        summary="conftest checks failed"
+        summary="failed checks"
     fi
     
     $here/../create-checkrun/create-checkrun.sh $GITHUB_TOKEN $GITHUB_HEAD_REF "conftest test '$kustomization'" $conclusion $summary $text
