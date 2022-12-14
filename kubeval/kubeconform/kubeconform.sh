@@ -2,9 +2,7 @@
 
 set -e
 
-for input_file in $@; do
-    echo "validating $input_file with kubeconform"
-    # kubeval --skip-kinds Kustomization --skip-kinds CustomResourceDefinition $input_file
-    kubeconform --ignore-missing-schemas --strict $input_file
+input_file=$1
 
-done
+>&2 echo "validating $input_file with kubeconform"
+kubeconform --ignore-missing-schemas --strict $input_file

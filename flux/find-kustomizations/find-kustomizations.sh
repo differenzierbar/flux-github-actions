@@ -1,11 +1,17 @@
 #!/bin/bash
 set -e
 
+DEFAULT_SEPARATOR=' '
+separator="${SEPARATOR:-$DEFAULT_SEPARATOR}"
+
 kustomizations_root=$1
-git_repository=$2
+query=$2
 
-flux_kustomization_files=$(find $kustomizations_root -name "*.yml" -exec yq -N eval-all ". | select(.kind == \"Kustomization\" and .apiVersion == \"kustomize.toolkit.fluxcd.io/v1beta2\" and .spec.sourceRef.name == \"$git_repository\") | filename" {} +)
+>&2 echo "kustomizations_root: $kustomizations_root"
+>&2 echo "query: $query"
+>&2 echo "separator: '$separator'"
 
+result=$(find $kustomizations_root -name "*.yml" -exec yq -N eval '. | select(.kind == "Kustomization" and .apiVersion == "kustomize.toolkit.fluxcd.io/v1beta2" and ('$query') ) | filename + "?metadata.name==\"" + .metadata.name + "\""' {} +)
+# >&2 echo "result inner: ${result[@]}"
+echo "${result[@]}" | tr "$separator" '\n' | sort -u | tr '\n' "$separator" | sed 's/ *$//g'
 
-IFS=" " read -r -a flux_kustomization_files <<< "$(echo "${flux_kustomization_files[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ')"
-echo ${flux_kustomization_files[@]}

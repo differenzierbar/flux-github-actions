@@ -1,0 +1,26 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: one
+spec:
+  path: ./kustomizations/one
+  sourceRef:
+    name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: two
+spec:
+  path: ./kustomizations/two
+  sourceRef:
+    name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: three
+spec:
+  path: ./external
+  sourceRef:
+    name: external
