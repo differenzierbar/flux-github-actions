@@ -12,16 +12,18 @@ here=`dirname $(realpath $0 --relative-to .)`
 separator=' '
 
 kustomizations=$($here/../../flux/find-kustomizations/find-kustomizations.sh $KUSTOMIZATION_ROOT ".spec.sourceRef.name==\"flux-system\"")
-# echo $kustomizations
+echo "kustomizations: '$kustomizations'"
 
 git_changes=$($here/../../git/git-changes/git-changes.sh $GIT_SHA $KUSTOMIZATION_ROOT)
 echo "git_changes: $git_changes"
 
 return_value=0
 
-while IFS= read -r kustomization; do
+while IFS= read -r kustomization && [[ ! -z "$kustomization" ]] ; do
 
     start=`date +%s`
+
+    echo "kustomization: '$kustomization'"
 
     # echo "$kustomization"
     parts=(${kustomization//\?/ })
