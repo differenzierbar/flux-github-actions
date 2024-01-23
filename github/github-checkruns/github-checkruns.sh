@@ -14,12 +14,17 @@ separator=' '
 kustomizations=$($here/../../flux/find-kustomizations/find-kustomizations.sh $KUSTOMIZATION_ROOT ".spec.sourceRef.name==\"flux-system\"")
 echo "kustomizations: '$kustomizations'"
 
+if [[ -z "$kustomization" ]]; then
+    echo "no kustomizations found"
+    exit 1
+fi
+
 git_changes=$($here/../../git/git-changes/git-changes.sh $GIT_SHA $KUSTOMIZATION_ROOT)
 echo "git_changes: $git_changes"
 
 return_value=0
 
-while IFS= read -r kustomization && [[ ! -z "$kustomization" ]] ; do
+while IFS= read -r kustomization ; do
 
     start=`date +%s`
 
