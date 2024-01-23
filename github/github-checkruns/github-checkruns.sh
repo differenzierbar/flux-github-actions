@@ -14,7 +14,7 @@ separator=' '
 kustomizations=$($here/../../flux/find-kustomizations/find-kustomizations.sh $KUSTOMIZATION_ROOT ".spec.sourceRef.name==\"flux-system\"")
 echo "kustomizations: '$kustomizations'"
 
-if [[ -z "$kustomization" ]]; then
+if [[ -z "$kustomizations" ]]; then
     echo "no kustomizations found"
     exit 1
 fi
