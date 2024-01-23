@@ -101,10 +101,14 @@ while IFS= read -r kustomization; do
             echo "looking for policy_folders in $resource_directory"
             IFS="$separator" read -r -a policy_folders <<< $($here/../../generic/find-in-ancestor-folders/find-in-ancestor-folders.sh $KUSTOMIZATION_ROOT $resource_directory "policy")
             echo "policy_folders: ${policy_folders[@]}"
-            set +e
-            conftest_result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]}")
-            conftest_return_code=$?
-            set -e
+            if [ ${#policy_folders[@]} -ne 0 ]; then
+                set +e
+                conftest_result=$($here/../../conftest/conftest-test/conftest.sh "$resource" "${policy_folders[@]}")
+                conftest_return_code=$?
+                set -e
+            else
+                echo "no policy folders found - skipping conftest"
+            fi
             echo "conftest result: $conftest_result"
             if [[ conftest_return_code -ne 0 ]]; then
                 check_failures["conftest $resource"]=$conftest_result
