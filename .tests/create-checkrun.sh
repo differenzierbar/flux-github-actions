@@ -18,7 +18,7 @@ shift 3
 >&2 echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
 
 
-shellscript magic to save stdout & stderr to variables following https://stackoverflow.com/a/18086548
+# shellscript magic to save stdout & stderr to variables following https://stackoverflow.com/a/18086548
 unset t_std t_err t_ret
 eval "$( ($@) \
         2> >(t_err=$(cat); typeset -p t_err) \
