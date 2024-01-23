@@ -18,20 +18,20 @@ jobs:
         run: |
           set -x
           set +e
-          .test/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} conftest/conftest-test conftest/conftest-test/tests/tests.sh
-          .test/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} flux/find-kustomizations flux/find-kustomizations/tests/tests.sh
-          .test/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} flux/get-kustomization-path flux/get-kustomization-path/tests/tests.sh
-          .test/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/filter-lists generic/filter-lists/tests/tests.sh
-          .test/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/find-files generic/find-files/tests/tests.sh
-          .test/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/find-in-ancestor-folders generic/find-in-ancestor-folders/tests/tests.sh
-          .test/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} kustomize/get-kustomization-resources kustomize/get-kustomization-resources/tests/tests.sh
-          .test/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} kustomize/get-kustomization-tree kustomize/get-kustomization-tree/tests/tests.sh
+          .tests/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} conftest/conftest-test conftest/conftest-test/tests/tests.sh
+          .tests/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} flux/find-kustomizations flux/find-kustomizations/tests/tests.sh
+          .tests/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} flux/get-kustomization-path flux/get-kustomization-path/tests/tests.sh
+          .tests/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/filter-lists generic/filter-lists/tests/tests.sh
+          .tests/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/find-files generic/find-files/tests/tests.sh
+          .tests/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} generic/find-in-ancestor-folders generic/find-in-ancestor-folders/tests/tests.sh
+          .tests/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} kustomize/get-kustomization-resources kustomize/get-kustomization-resources/tests/tests.sh
+          .tests/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} kustomize/get-kustomization-tree kustomize/get-kustomization-tree/tests/tests.sh
 
       - name: integation tests
         id: integration-tests
         shell: bash
         run: |
-          .test/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} integration-tests integration-tests/integration-test.sh
+          .tests/create-checkrun.sh ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.head.sha }} integration-tests integration-tests/integration-test.sh
 
       - name: Checkout flux-github-actions-test
         uses: actions/checkout@v3
